@@ -8,6 +8,7 @@ from connection import connect
 from connection import check_connect
 from connection import kill
 from connection import ppid
+from connection import kill_internet
 
 try:
     user = getpass.getuser() # Узнаем пользователя
@@ -18,25 +19,14 @@ try:
         exit()
     
     check_status = check_connect(timeout = 0, print_output = False)
+
     if check_status == 1:
         ppid = ppid()
         if ppid != None:
             print_arr("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
             
-            while True:
-                user_choice = input("> ")
-                if user_choice == "y":
-                    kill(ppid)
-                    print_arr("Соединение было разорвано!", color = "red")
-                    break
+            kill_internet(ppid)
 
-                if user_choice == "n":
-                    print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
-                    break
-                
-                else:
-                    print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
-    
     bool_path = os.path.exists(path_dhcp)
     
     if bool_path is True:
@@ -112,7 +102,9 @@ try:
     
     # Создание профиля
     if write_profile(ssid, password):
-        print_arr("Профиль был успешно создан!", color = "green")
+        print_arr("Профиль был успешно создан!", color = "green") 
+        path = write_profile.__annotations__["path"]
+        device = write_profile.__annotations__["device"]
     
     else:
         print_arr("Профиль существует, перезаписать? (y, n)", color = "yellow")
@@ -131,6 +123,7 @@ try:
             if "n" in user_choice:
                 print_arr("OK.", color = "green")
                 profiles_dir = os.listdir("/etc/wpa_supplicant")
+                print_arr(profiles_dir, color = "red")
                 if len(profiles_dir) > 1:
                     profiles_supl = [line.replace("wpa_supplicant", "")[:-5] for line in profiles_dir]
                     profiles = [line[:line.rfind("-")] for line in profiles_supl]
@@ -139,7 +132,7 @@ try:
                     print()
                     print_arr("-" * 25, color = "green")
                     for ind, value in enumerate(profiles, 1):
-                        print_arr(ind, " - ", value,  color = "green")
+                        print_arr(f"[{ind}] ", value,  color = "green")
                     print_arr("-" * 25, color = "green")
 
                     while True:
@@ -155,7 +148,7 @@ try:
                                 name_wifi = "wpa_supplicant{}.conf".format(name_wifi)
                                 path = f"/etc/wpa_supplicant/{name_wifi}"
                                 break
-
+                            break
 
                         except ValueError as e:
                             print (e)
@@ -174,7 +167,15 @@ try:
                                     name_wifi = "wpa_supplicant{}.conf".format(name_wifi[0])
                                     path = f"/etc/wpa_supplicant/{name_wifi}"
                                 break
-                    break
+                
+                if len(profiles_dir) == 1:
+                    index = slice(14, -5)
+                    print_arr("Обнаружен единственный профиль. Подключаю...", color = "green")
+                    path = f"/etc/wpa_supplicant/{profiles_dir[0]}"
+                    device = profiles_dir[0][index]
+                    device = device[device.rfind("-") + 1:]
+                break
+
             else:
                 print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
 

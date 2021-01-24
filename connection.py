@@ -50,7 +50,35 @@ def ppid() -> int:
         if 'wpa_supplicant' in str(p.name):
             return p.pid
 
-def kill(id_proccess: int):
-    id_proccess: "Айди процесса, для убийства"
-    process = psutil.Process(id_proccess)
-    process.kill()
+def kill(id_proccess: int) -> int:
+    try:
+        id_proccess: "Айди процесса, для убийства"
+        process = psutil.Process(id_proccess)
+        process.kill()
+        return 1
+    except:
+        return 0
+
+
+def kill_internet(ppid:int, print_output = True) -> int:
+    print_output: "Печать вывода"
+    ppid: "Номер процесса"
+
+    while True:
+        user_choice = input("> ")
+        if user_choice == "y":
+            kill(ppid)
+            if print_output is True:
+                print_arr("Соединение было разорвано!", color = "red")
+            return 1
+            break
+
+        if user_choice == "n":
+            if print_output is True:
+                print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
+            return 1
+            break
+                
+        else:
+            print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
+            return 0
