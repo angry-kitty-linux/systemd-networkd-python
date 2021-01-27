@@ -31,7 +31,7 @@ DHCP=ipv4
 """)
 
 def write_profile(ssid:str, password:str, replace = False) -> bool:
-    path = f"/etc/wpa_supplicant/wpa_supplicant{ssid}-{device}.conf"
+    path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
         with open(path, "w") as f:
             ssid, password = (str(ssid), str(password))
