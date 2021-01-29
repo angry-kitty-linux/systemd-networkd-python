@@ -46,6 +46,4 @@ update_config=1
         
         return True
 
-def read_profile():
-    #with open()
-    pass
+

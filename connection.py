@@ -5,6 +5,7 @@ from colors import print_arr
 import subprocess
 import time
 import psutil
+from typing import Union
 
 def check_connect(timeout = 10, print_output = True) -> int:
     
@@ -16,7 +17,9 @@ def check_connect(timeout = 10, print_output = True) -> int:
             print_arr("Проверка соединения...", color = "yellow")
         
         time.sleep(timeout)
-        subprocess.check_call(["ping", "-c 1", "eth0.me"], stdout=open(os.devnull, 'wb'), stderr = None)
+        dev_null = open(os.devnull, 'wb')
+
+        subprocess.check_call(["ping", "-c 1", "eth0.me"], stdout=dev_null, stderr = dev_null)
         return 1
 
     except subprocess.CalledProcessError:
@@ -44,12 +47,12 @@ def connect(device:str, path:str, print_output = True) -> int:
             print_arr("Не получилось подключится ): ", color = "red")
         return 0
 
-def ppid() -> int:
+def ppid() -> Union[int]:
     for proc in psutil.pids():
         p = psutil.Process(proc)
         if 'wpa_supplicant' in str(p.name):
             return p.pid
-
+        
 def kill(id_proccess: int) -> int:
     try:
         id_proccess: "Айди процесса, для убийства"

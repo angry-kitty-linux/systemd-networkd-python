@@ -21,11 +21,11 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
 
     if check_status == 1:
-        ppid = ppid()
-        if ppid != None:
+        ppid_wpa = ppid()
+        if ppid_wpa != None:
             print_arr("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
             
-            kill_internet(ppid)
+            kill_internet(ppid_wpa)
 
     bool_path = os.path.exists(path_dhcp)
     
@@ -123,7 +123,6 @@ try:
             if "n" in user_choice:
                 print_arr("OK.", color = "green")
                 profiles_dir = os.listdir("/etc/wpa_supplicant")
-                print_arr(profiles_dir, color = "red")
                 if len(profiles_dir) > 1:
                     profiles_supl = [line.replace("wpa_supplicant-", "")[:-5] for line in profiles_dir]
                     profiles = [line[:line.rfind("-")] for line in profiles_supl]
@@ -132,7 +131,7 @@ try:
                     print()
                     print_arr("-" * 25, color = "green")
                     for ind, value in enumerate(profiles, 1):
-                        print_arr(f"[{ind}] ", value, color = "red")
+                        print_arr(f"[{ind}] ", value, color = "red", arrow = False)
                     print_arr("-" * 25, color = "green")
 
                     while True:
@@ -179,6 +178,11 @@ try:
 
             else:
                 print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
+
+    check_status = check_connect(timeout = 0, print_output = False)
+    if check_status == 1:
+        ppid_user = ppid()
+        kill(ppid_user)
 
     status_connect = connect(device, path)
 
