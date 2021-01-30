@@ -3,9 +3,9 @@
 import os
 from colors import print_arr
 from input_while import input_y_n 
+import subprocess
 
-
-
+dev_null = open(os.devnull, "wb")
 
 def write_daemon(device:str, path:str) -> int:
     device: "Модуль вайли"
@@ -40,3 +40,17 @@ WantedBy = multi-user.target
             with open(path_daemon, "w") as f:
                 f.write(daemon)
 
+def auto_wpa(print_output = True) -> int:
+
+    print_output: "Вывод"
+
+    try:
+        if print_output:
+            print_arr("Добавляю в автозагрузку...", color = "green")
+
+        subprocess.check_call(["systemctl", "enable", "wpa_supplicant_python.service"], stdout = dev_null,
+                                                                                        stderr = dev_null)
+        return 1
+    except subprocess.CalledProcessError as e:
+        print_arr(e, color = "red")
+        return 0

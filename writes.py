@@ -47,7 +47,6 @@ update_config=1
         write_profile.__annotations__["device"] = device
         write_profile.__annotations__["path"] = path
         
-        print (device)
         return True
 
 
