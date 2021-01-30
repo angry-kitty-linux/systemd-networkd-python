@@ -7,7 +7,10 @@ path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
 
 devices = [line for line in psutil.net_if_stats()]
-device = devices[-1]
+device_list = [line for line in devices if line != 'lo']
+
+if len(device_list) == 1:
+    device = device_list[0]
 
 def write_dhcp(): # Функция, для создания конфига в systemd-networkd  
     with open(path_dhcp, 'w') as f:
@@ -44,6 +47,7 @@ update_config=1
         write_profile.__annotations__["device"] = device
         write_profile.__annotations__["path"] = path
         
+        print (device)
         return True
 
 

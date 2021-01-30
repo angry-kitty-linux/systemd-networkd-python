@@ -85,3 +85,7 @@ def kill_internet(ppid:int, print_output = True) -> int:
         else:
             print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
             return 0
+
+def autostart_wpa() -> int:
+    subprocess.check_call(["systemctl", "enable", ""], stdout=dev_null, stderr = dev_null)
+    
