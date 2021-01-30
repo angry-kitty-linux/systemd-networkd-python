@@ -2,6 +2,7 @@
 
 import os
 from colors import print_arr
+from daemon import write_daemon
 import subprocess
 import time
 import psutil
@@ -87,5 +88,6 @@ def kill_internet(ppid:int, print_output = True) -> int:
             return 0
 
 def autostart_wpa() -> int:
-    subprocess.check_call(["systemctl", "enable", ""], stdout=dev_null, stderr = dev_null)
+    pass
+    #subprocess.check_call(["systemctl", "enable", ""], stdout=dev_null, stderr = dev_null)
     

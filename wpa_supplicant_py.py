@@ -9,6 +9,7 @@ from connection import check_connect
 from connection import kill
 from connection import ppid
 from connection import kill_internet
+from daemon import write_daemon
 
 try:
     user = getpass.getuser() # Узнаем пользователя
@@ -189,6 +190,10 @@ try:
     if status_connect == 0:
         print_arr ("device - ", device, color = "yellow")
         print_arr("path - ", path, color = "yellow")
+
+    if status_connect == 1:
+        status_daemon = write_daemon(device = device, path = path)    
+
 except KeyboardInterrupt:
     print ()
     print_arr("Остановлено!", color = "red")
