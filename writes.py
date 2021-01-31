@@ -4,40 +4,39 @@ from colors import print_arr
 from input_while import input_y_n
 import os
 from connection import check_connect
-
-def status_function(status:bool):
+from typing import Union
+import subprocess
+# 33
+# 36 
+def status_function():
+    global psutil
     """
     Функция для того, чтобы сообщить всем остальным использовать локальную версию
     """
-    if status is False:
-        status_function.__annotations__["psutil"] = False 
-    
-    if status is True:
-        status_function.__annotations__["psutil"] = True
 
-try:
-    import psutil
-except ModuleNotFoundError:
-    print_arr("Psutil не найден в системе!", color = "red")
-    status_choice = input_y_n("Желаете использовать pip, для установки? (y, n)", color = "yellow")
-    if status_choice == 1:
-        if check_connect(timeout = 0, print_output = False):
-            try:
-                devnull = open(os.devnull, "wb")
-                subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
-            except FileNotFoundError:
-                print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
-                subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"])
-                subprocess.check_call(["python", "get-pip.py"])
-                subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
+    try:
+        import psutil
+    except ModuleNotFoundError:
+        print_arr("Psutil не найден в системе!", color = "red")
+        status_choice = input_y_n("Желаете использовать pip, для установки? (y, n)", color = "yellow")
+        if status_choice == 1:
+            if check_connect(timeout = 0, print_output = False):
+                try:
+                    devnull = open(os.devnull, "wb")
+                    subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
+                except FileNotFoundError:
+                    print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
+                    subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"])
+                    subprocess.check_call(["python", "get-pip.py"])
+                    subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
                 
-                print_arr("Psutil установлен!", color = "green")
-                status_function(status = True)
-        else:
-            print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
-            import psutil_loc as psutil
-            status_function(status = False)
+                    print_arr("Psutil установлен!", color = "green")
+                    import psutil
+            else:
+                print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
+                import psutil_loc as psutil
 
+status_function()
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
@@ -86,4 +85,18 @@ update_config=1
         return True
 
 
+def ppid() -> Union[int]:
+    print (status_function.__annotations__)
+    for proc in psutil.pids():
+        p = psutil.Process(proc)
+        if 'wpa_supplicant' in str(p.name):
+            return p.pid
 
+def kill(id_proccess: int) -> int:
+    try:
+        id_proccess: "Айди процесса, для убийства"
+        process = psutil.Process(id_proccess)
+        process.kill()
+        return 1
+    except:
+        return 0

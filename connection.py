@@ -6,12 +6,6 @@ from daemon import write_daemon
 import subprocess
 import time
 from typing import Union
-from writes import status_function
-
-if status_function.__annotations__["psutil"] is True:
-    import psutil
-else:
-    import psutil_loc as psutil
 
 def check_connect(timeout = 10, print_output = True) -> int:
     
@@ -53,22 +47,6 @@ def connect(device:str, path:str, print_output = True) -> int:
             print_arr("Не получилось подключится ): ", color = "red")
         return 0
 
-def ppid() -> Union[int]:
-    for proc in psutil.pids():
-        p = psutil.Process(proc)
-        if 'wpa_supplicant' in str(p.name):
-            return p.pid
-        
-def kill(id_proccess: int) -> int:
-    try:
-        id_proccess: "Айди процесса, для убийства"
-        process = psutil.Process(id_proccess)
-        process.kill()
-        return 1
-    except:
-        return 0
-
-
 def kill_internet(ppid:int, print_output = True) -> int:
     print_output: "Печать вывода"
     ppid: "Номер процесса"
@@ -92,7 +70,4 @@ def kill_internet(ppid:int, print_output = True) -> int:
             print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
             return 0
 
-def autostart_wpa() -> int:
-    pass
-    #subprocess.check_call(["systemctl", "enable", ""], stdout=dev_null, stderr = dev_null)
     
