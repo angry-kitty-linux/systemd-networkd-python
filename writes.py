@@ -7,12 +7,23 @@ import os
 from connection import check_connect
 from typing import Union
 import subprocess
+
 # 33
 # 36 
+
+def check_root():
+    user = getpass.getuser() # Узнаем пользователя
+
+    if user != "root":
+        print_arr(f"Привет, ", user, color = "green")
+        print_arr("Для работоспособности программы Вам требуется root", color = "red")
+        exit()
 
 
 def status_function():
     global psutil
+    check_root()
+
     """
     Функция для того, чтобы сообщить всем остальным использовать локальную версию
     """
@@ -34,6 +45,8 @@ def status_function():
                     subprocess.check_call(["python", "get-pip.py"], stderr = devnull, stdout = devnull)
                     subprocess.check_call(["pip", "install", "psutil"], stdout = devnull, stderr = devnull)
                     print_arr("Psutil установлен!", color = "green")
+                    os.remove("get-pip.py")
+
                     import psutil
             else:
                 print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
@@ -103,10 +116,4 @@ def kill(id_proccess: int) -> int:
     except:
         return 0
 
-def check_root():
-    user = getpass.getuser() # Узнаем пользователя
 
-    if user != "root":
-        print_arr(f"Привет, ", user, color = "green")
-        print_arr("Для работоспособности программы Вам требуется root", color = "red")
-        exit()

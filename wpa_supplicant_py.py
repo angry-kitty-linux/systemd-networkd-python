@@ -160,6 +160,7 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_user = ppid()
+        print (ppid_user)
         kill(ppid_user)
 
     status_connect = connect(device, path)
