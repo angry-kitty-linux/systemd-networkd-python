@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import getpass
 from colors import print_arr
 from input_while import input_y_n
 import os
@@ -8,6 +9,8 @@ from typing import Union
 import subprocess
 # 33
 # 36 
+
+
 def status_function():
     global psutil
     """
@@ -29,7 +32,7 @@ def status_function():
                     print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
                     subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], stdout=devnull, stderr=devnull)
                     subprocess.check_call(["python", "get-pip.py"], stderr = devnull, stdout = devnull)
-                    subprocess.check_call(["pip", "install", "psutil"])
+                    subprocess.check_call(["pip", "install", "psutil"], stdout = devnull, stderr = devnull)
                     print_arr("Psutil установлен!", color = "green")
                     import psutil
             else:
@@ -99,3 +102,11 @@ def kill(id_proccess: int) -> int:
         return 1
     except:
         return 0
+
+def check_root():
+    user = getpass.getuser() # Узнаем пользователя
+
+    if user != "root":
+        print_arr(f"Привет, ", user, color = "green")
+        print_arr("Для работоспособности программы Вам требуется root", color = "red")
+        exit()

@@ -2,7 +2,9 @@
 
 import os
 from colors import print_arr
+from wrappers import KeyboardError
 
+@KeyboardError()
 def input_y_n(text: str, color: str) -> int:
     
     text: "`text` будет появлятся при вопросе"

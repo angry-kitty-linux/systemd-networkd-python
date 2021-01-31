@@ -7,6 +7,7 @@ from writes import write_dhcp
 from writes import write_wireless
 from writes import write_profile
 from writes import status_function
+from writes import check_root
 from connection import connect
 from connection import check_connect
 from writes import kill
@@ -20,13 +21,8 @@ try:
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
     path_wireless = "/etc/systemd/network/25-wireless.network"    
     
-    user = getpass.getuser() # Узнаем пользователя
+    check_root()
 
-    if user != "root":
-        print_arr(f"Привет, ", user, color = "green")
-        print_arr("Для работоспособности программы Вам требуется root", color = "red")
-        exit()
-    
     check_status = check_connect(timeout = 0, print_output = False)
 
     if check_status == 1:
@@ -98,7 +94,7 @@ try:
     
     else:
         user_choice = input_y_n("Профиль существует, перезаписать? (y, n)", color = "yellow")
-        
+        print (user_choice) 
         if user_choice == 1:
             write_profile(ssid, password, replace = True)
             print_arr("Перезаписано!", color = "green")

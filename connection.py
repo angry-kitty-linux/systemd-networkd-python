@@ -7,6 +7,8 @@ import subprocess
 import time
 from typing import Union
 import writes
+
+
 def check_connect(timeout = 10, print_output = True) -> int:
     
     timeout: "Задержка (wpa_supplicant не сразу включается)"
@@ -68,6 +70,5 @@ def kill_internet(ppid:int, print_output = True) -> int:
                 
         else:
             print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
-            return 0
 
     
