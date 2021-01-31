@@ -5,8 +5,13 @@ from colors import print_arr
 from daemon import write_daemon
 import subprocess
 import time
-import psutil
 from typing import Union
+from writes import status_function
+
+if status_function.__annotations__["psutil"] is True:
+    import psutil
+else:
+    import psutil_loc as psutil
 
 def check_connect(timeout = 10, print_output = True) -> int:
     
