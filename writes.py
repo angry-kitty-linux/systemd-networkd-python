@@ -30,7 +30,6 @@ def status_function():
                     subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], stdout=devnull, stderr=devnull)
                     subprocess.check_call(["python", "get-pip.py"], stderr = devnull, stdout = devnull)
                     subprocess.check_call(["pip", "install", "psutil"])
-                    print ("DONEEEEEEEEEEEEEEEEEEE")
                     print_arr("Psutil установлен!", color = "green")
                     import psutil
             else:
