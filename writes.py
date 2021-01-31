@@ -23,13 +23,14 @@ def status_function():
             if check_connect(timeout = 0, print_output = False):
                 try:
                     devnull = open(os.devnull, "wb")
-                    subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
+                    subprocess.check_call(["pip", "install", "psutil"])
+                    import psutil
                 except FileNotFoundError:
                     print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
-                    subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"])
-                    subprocess.check_call(["python", "get-pip.py"])
-                    subprocess.check_call(["pip", "install", "psutil"], stdout=devnull, stderr=devnull)
-                
+                    subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], stdout=devnull, stderr=devnull)
+                    subprocess.check_call(["python", "get-pip.py"], stderr = devnull, stdout = devnull)
+                    subprocess.check_call(["pip", "install", "psutil"])
+                    print ("DONEEEEEEEEEEEEEEEEEEE")
                     print_arr("Psutil установлен!", color = "green")
                     import psutil
             else:
@@ -86,7 +87,6 @@ update_config=1
 
 
 def ppid() -> Union[int]:
-    print (status_function.__annotations__)
     for proc in psutil.pids():
         p = psutil.Process(proc)
         if 'wpa_supplicant' in str(p.name):

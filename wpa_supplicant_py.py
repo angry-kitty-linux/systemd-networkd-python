@@ -17,6 +17,8 @@ from daemon import auto_wpa
 from input_while import input_y_n
 
 try:
+    path_dhcp = "/etc/systemd/network/50-dhcp.network"
+    path_wireless = "/etc/systemd/network/25-wireless.network"    
     
     user = getpass.getuser() # Узнаем пользователя
 
@@ -127,6 +129,7 @@ try:
                             
                         else:
                             name_wifi = profiles_supl[user_choice - 1]
+                            device = name_wifi[name_wifi.rfind("-") + 1:]
                             name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
                             path = f"/etc/wpa_supplicant/{name_wifi}"
                             break

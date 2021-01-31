@@ -6,7 +6,7 @@ from daemon import write_daemon
 import subprocess
 import time
 from typing import Union
-
+import writes
 def check_connect(timeout = 10, print_output = True) -> int:
     
     timeout: "Задержка (wpa_supplicant не сразу включается)"
@@ -54,7 +54,7 @@ def kill_internet(ppid:int, print_output = True) -> int:
     while True:
         user_choice = input("> ")
         if user_choice == "y":
-            kill(ppid)
+            writes.kill(ppid)
             if print_output is True:
                 print_arr("Соединение было разорвано!", color = "red")
             return 1
