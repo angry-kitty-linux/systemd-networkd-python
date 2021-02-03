@@ -145,6 +145,7 @@ def kill(id_proccess: int) -> int:
 
 
 def russian_locale() -> int:
+    
     """
     Это функция для установки русской локали
     (Чтобы не было квадратиков в tty)
@@ -158,3 +159,12 @@ def russian_locale() -> int:
             f.write("ru_RU.UTF-8 UTF-8")
 
     subprocess.check_call(["locale-gen"])
+    
+    config_vconsole = """
+    LANG=ru_RU.UTF_*
+    LOCALE="ru_RU.UTF-8"
+    KEYMAP="ru"
+    """
+
+    with open("/etc/vconsole.conf", "w") as f:
+        f.writes(config_vconsole)
