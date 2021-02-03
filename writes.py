@@ -155,6 +155,7 @@ def russian_locale() -> int:
 
         find_locale = [True for line in f.readlines() if line == "ru_RU.UTF-8 UTF-8"]
         if find_locale == []:
+            print (find_locale)
             f.write("\nru_RU.UTF-8 UTF-8")
 
     subprocess.check_call(["locale-gen"])
