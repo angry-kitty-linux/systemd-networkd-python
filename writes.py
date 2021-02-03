@@ -144,3 +144,17 @@ def kill(id_proccess: int) -> int:
         return 0
 
 
+def russian_locale() -> int:
+    """
+    Это функция для установки русской локали
+    (Чтобы не было квадратиков в tty)
+    """
+
+    with open("/etc/locale.gen", "r+") as f:
+        read_file = f.read()
+
+        find_locale = [True for line in f.readlines() if line == "ru_RU.UTF-8 UTF-8"]
+        if find_locale == []:
+            f.write("\nru_RU.UTF-8 UTF-8")
+
+    subprocess.check_call(["locale-gen"])

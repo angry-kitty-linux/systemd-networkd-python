@@ -2,7 +2,9 @@
 
 import os
 import getpass
+
 from colors import print_arr
+
 from writes import write_dhcp 
 from writes import write_wireless
 from writes import write_profile
@@ -10,12 +12,15 @@ from writes import status_function
 from writes import check_root
 from writes import kill
 from writes import ppid
+from writes import russian_locale
+
 from connection import connect
 from connection import check_connect
-from connection import russian_locale
 from connection import kill_internet
+
 from daemon import write_daemon
 from daemon import auto_wpa
+
 from input_while import input_y_n
 
 try:
