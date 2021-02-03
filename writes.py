@@ -161,10 +161,10 @@ def russian_locale() -> int:
     subprocess.check_call(["locale-gen"])
     
     config_vconsole = """
-    LANG=ru_RU.UTF_*
-    LOCALE="ru_RU.UTF-8"
-    KEYMAP="ru"
+LANG=ru_RU.UTF_*
+LOCALE="ru_RU.UTF-8"
+KEYMAP="ru"
     """
 
     with open("/etc/vconsole.conf", "w") as f:
-        f.writes(config_vconsole)
+        f.write(config_vconsole)
