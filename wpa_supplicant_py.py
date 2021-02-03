@@ -8,20 +8,23 @@ from writes import write_wireless
 from writes import write_profile
 from writes import status_function
 from writes import check_root
-from connection import connect
-from connection import check_connect
 from writes import kill
 from writes import ppid
+from connection import connect
+from connection import check_connect
+from connection import russian_locale
 from connection import kill_internet
 from daemon import write_daemon
 from daemon import auto_wpa
 from input_while import input_y_n
 
 try:
-    path_dhcp = "/etc/systemd/network/50-dhcp.network"
-    path_wireless = "/etc/systemd/network/25-wireless.network"    
-    
+    russian_locale()
     check_root()
+    
+    #-----------------------
+    path_dhcp = "/etc/systemd/network/50-dhcp.network"
+    path_wireless = "/etc/systemd/network/25-wireless.network" 
 
     check_status = check_connect(timeout = 0, print_output = False)
 

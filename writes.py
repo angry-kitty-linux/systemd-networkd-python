@@ -7,9 +7,7 @@ import os
 from connection import check_connect
 from typing import Union
 import subprocess
-
-# 33
-# 36 
+import re
 
 def check_root():
     user = getpass.getuser() # Узнаем пользователя
@@ -107,11 +105,40 @@ def ppid() -> Union[int]:
         if 'wpa_supplicant' in str(p.name):
             return p.pid
 
+def check_service() -> int:
+    known_cgroups = set()
+    for pid in psutil.pids():
+        try:
+            cgroups = open('/proc/%d/cgroup' % pid, 'r').read()
+        except IOError:
+            continue
+        systemd_name_match = re.search('^1:name=systemd:(/.+)$', cgroups, re.MULTILINE)
+        if systemd_name_match is None:
+            continue
+        systemd_name = systemd_name_match.group(1)
+        if systemd_name in known_cgroups:
+            continue 
+        if not systemd_name.endswith('.service'):
+            continue 
+        known_cgroups.add(systemd_name)
+
+        if "wpa_supplicant_python.service" in systemd_name:
+            return 1
+        else:
+            return 0
+
+
 def kill(id_proccess: int) -> int:
+    id_proccess: "Айди процесса, для убийства"
     try:
-        id_proccess: "Айди процесса, для убийства"
+        devnull = open(os.devnull, "wb")
+        if check_service == 1:
+            subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
+                                    stderr = devnull, stdout = devnull)
+        
         process = psutil.Process(id_proccess)
         process.kill()
+
         return 1
     except:
         return 0
