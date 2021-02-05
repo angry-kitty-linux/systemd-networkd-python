@@ -143,7 +143,14 @@ def kill(id_proccess: int) -> int:
     except:
         return 0
 
-
+def check_locale() -> int:
+    with open("/etc/locale.gen", "r") as f:
+        if "#ru_RU.UTF-8 UTF-8" in f.read():
+            return 1
+        else:
+            print (True)
+            return 0
+    
 def russian_locale() -> int:
     
     """
@@ -152,15 +159,17 @@ def russian_locale() -> int:
     """
 
     try:
-        with open("/etc/locale.gen", "r") as f:
-            file_read = f.read()
+        if check_locale() == 1:
+            with open("/etc/locale.gen", "r") as f:
+                file_read = f.read()
         
-        open("/etc/locale.gen", "w").close()
+            open("/etc/locale.gen", "w").close()
 
-        with open("/etc/locale.gen", "w") as f:
-            file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
-            print(file_read, file = f)
-        subprocess.check_call(["locale-gen"])
+            with open("/etc/locale.gen", "w") as f:
+                file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
+                print(file_read, file = f)
+            subprocess.check_call(["locale-gen"])
+        
         subprocess.check_call(["setfont", "cyr-sun16"])
 
         return 1
