@@ -26,13 +26,11 @@ from input_while import input_y_n
 try:
     russian_locale()
     check_root()
-    
     #-----------------------
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
     path_wireless = "/etc/systemd/network/25-wireless.network" 
 
     check_status = check_connect(timeout = 0, print_output = False)
-
     if check_status == 1:
         ppid_wpa = ppid()
         if ppid_wpa != None:
@@ -102,7 +100,6 @@ try:
     
     else:
         user_choice = input_y_n("Профиль существует, перезаписать? (y, n)", color = "yellow")
-        print (user_choice) 
         if user_choice == 1:
             write_profile(ssid, password, replace = True)
             print_arr("Перезаписано!", color = "green")
@@ -168,7 +165,6 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_user = ppid()
-        print (ppid_user)
         kill(ppid_user)
 
     status_connect = connect(device, path)

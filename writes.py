@@ -151,20 +151,19 @@ def russian_locale() -> int:
     (Чтобы не было квадратиков в tty)
     """
 
-    with open("/etc/locale.gen", "r+") as f:
+    try:
+        with open("/etc/locale.gen", "r") as f:
+            file_read = f.read()
+        
+        open("/etc/locale.gen", "w").close()
 
-        find_locale = [True for line in f.readlines() if line == "ru_RU.UTF-8 UTF-8"]
-        if find_locale == []:
-            print (find_locale)
-            f.write("ru_RU.UTF-8 UTF-8")
+        with open("/etc/locale.gen", "w") as f:
+            file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
+            print(file_read, file = f)
+        subprocess.check_call(["locale-gen"])
+        subprocess.check_call(["setfont", "cyr-sun16"])
 
-    subprocess.check_call(["locale-gen"])
-    
-    config_vconsole = """
-LANG=ru_RU.UTF_*
-LOCALE="ru_RU.UTF-8"
-KEYMAP="ru"
-    """
+        return 1
+    except FileNotFoundError:
+        return 0 
 
-    with open("/etc/vconsole.conf", "w") as f:
-        f.write(config_vconsole)
