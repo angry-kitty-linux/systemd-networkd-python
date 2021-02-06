@@ -8,7 +8,6 @@ from connection import check_connect
 from typing import Union
 import subprocess
 import re
-import psutil
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
