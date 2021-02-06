@@ -35,6 +35,7 @@ try:
 
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
     path_wireless = "/etc/systemd/network/25-wireless.network" 
+    devnull = open(os.devnull, "wb")
 
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
@@ -63,11 +64,15 @@ try:
     #########################
     # Добавление в автозагрузку
     print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color = "green")
-    subprocess.check_call(["systemctl", "enable", "--now", "systemd-networkd.service"])
+    subprocess.check_call(["systemctl", "enable", "--now", "systemd-networkd.service"],
+                          stdout = devnull, stderr = devnull)
     # Создание ссылки
-    os.system("ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf")
+    subprocess.check_call(["ln", "-snf", "/run/systemd/resolve/resolv.conf", "/etc/resolv.conf"],
+                          stdout = devnull, stderr = devnull)
+
     # Запуск systemd-resolved / автозагрузка
-    os.system("systemctl enable --now systemd-resolved.service")
+    subprocess.check_call(["systemctl", "enable", "--now", "systemd-resolved.service"],
+                          stdout = devnull, stderr = devnull)
     #########################
 
     # Проверка на существование ..../25-wireless.network
