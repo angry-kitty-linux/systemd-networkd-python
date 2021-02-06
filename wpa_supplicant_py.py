@@ -14,6 +14,7 @@ from writes import check_root
 from writes import kill
 from writes import ppid
 from writes import russian_locale
+from writes import default_locale
 
 from connection import connect
 from connection import check_connect
@@ -178,7 +179,9 @@ try:
     if status_connect == 1:
         status_daemon = write_daemon(device = device, path = path)    
         auto_wpa(print_output = True)    
-        
-except KeyboardInterrupt:
+    
+    default_locale()    
+except (KeyboardInterrupt, EOFError):
     print ()
     print_arr("Остановлено!", color = "red")
+    default_locale()

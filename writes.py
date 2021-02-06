@@ -13,6 +13,8 @@ import psutil
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
 
+devnull = open(os.devnull, "wb")
+
 def check_root():
     user = getpass.getuser() # Узнаем пользователя
 
@@ -56,7 +58,6 @@ def status_function():
         if status_choice == 1:
             if check_connect(timeout = 0, print_output = False):
                 try:
-                    devnull = open(os.devnull, "wb")
                     subprocess.check_call(["pip", "install", "psutil"])
                     import psutil
                 except FileNotFoundError:
@@ -133,7 +134,7 @@ def check_service() -> int:
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
     try:
-        devnull = open(os.devnull, "wb")
+        
         if check_service() == 1:
             subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
                                     stderr = devnull, stdout = devnull)
@@ -144,6 +145,14 @@ def kill(id_proccess: int) -> int:
         return 1
     except:
         return 0
+
+def default_locale() -> int:
+    
+    """
+    Функция для установки дефолтного шрифта
+    """
+
+    subprocess.check_call(["setfont"])
 
 def check_locale() -> int:
     with open("/etc/locale.gen", "r") as f:
@@ -172,9 +181,9 @@ def russian_locale() -> int:
 
             subprocess.check_call(["locale-gen"])
         
-        subprocess.check_call(["setfont", "cyr-sun16"])
+        subprocess.check_call(["setfont", "latarcyrheb-sun16"], stderr=devnull)
 
         return 1
-    except FileNotFoundError:
+    except (FileNotFoundError, subprocess.CalledProcessError) :
         return 0 
 

@@ -7,9 +7,10 @@ def KeyboardError():
         def wrap2(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except:
+            except (KeyboardInterrupt, EOFError):
                 print()
                 print_arr("Остановлено!", color = "red")
+                default_locale()
                 exit()
         return wrap2
     return wrap
