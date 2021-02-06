@@ -7,7 +7,7 @@ import subprocess
 import time
 from typing import Union
 import writes
-
+from input_while import input_y_n
 
 def check_connect(timeout = 10, print_output = True) -> int:
     
@@ -53,22 +53,17 @@ def kill_internet(ppid:int, print_output = True) -> int:
     print_output: "Печать вывода"
     ppid: "Номер процесса"
 
-    while True:
-        user_choice = input("> ")
-        if user_choice == "y":
-            writes.kill(ppid)
-            if print_output is True:
-                print_arr("Соединение было разорвано!", color = "red")
-            return 1
-            break
+    status_user = input_y_n("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
+    if status_user == 1:
+        writes.kill(ppid)
+        if print_output is True:
+            print_arr("Соединение было разорвано!", color = "red")
+        return 1
 
-        if user_choice == "n":
-            if print_output is True:
-                print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
-            return 1
-            break
+    if status_user == 0:
+        if print_output is True:
+            print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
+        return 0
                 
-        else:
-            print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
 
 

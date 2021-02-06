@@ -40,8 +40,6 @@ try:
     if check_status == 1:
         ppid_wpa = ppid()
         if ppid_wpa != None:    
-            print_arr("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
-            
             kill_internet(ppid_wpa)
 
     bool_path = os.path.exists(path_dhcp)
