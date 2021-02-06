@@ -9,6 +9,9 @@ from typing import Union
 import subprocess
 import re
 
+path_dhcp = "/etc/systemd/network/50-dhcp.network"
+path_wireless = "/etc/systemd/network/25-wireless.network"
+
 def check_root():
     user = getpass.getuser() # Узнаем пользователя
 
@@ -17,10 +20,28 @@ def check_root():
         print_arr("Для работоспособности программы Вам требуется root", color = "red")
         exit()
 
+def device():
+
+    global device
+
+    devices = [line for line in psutil.net_if_stats()]
+    device_list = [line for line in devices if line != 'lo']
+
+    if len(device_list) == 1:
+        device = device_list[0]
+
+def write_dhcp(): # Функция, для создания конфига в systemd-networkd  
+    with open(path_dhcp, 'w') as f:
+        f.write("""
+[Match]
+Name=en*
+ 
+[Network]
+DHCP=yes
+        """)
 
 def status_function():
     global psutil
-    check_root()
 
     """
     Функция для того, чтобы сообщить всем остальным использовать локальную версию
@@ -49,27 +70,7 @@ def status_function():
             else:
                 print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
                 import psutil_loc as psutil
-
-status_function()
-
-path_dhcp = "/etc/systemd/network/50-dhcp.network"
-path_wireless = "/etc/systemd/network/25-wireless.network"
-
-devices = [line for line in psutil.net_if_stats()]
-device_list = [line for line in devices if line != 'lo']
-
-if len(device_list) == 1:
-    device = device_list[0]
-
-def write_dhcp(): # Функция, для создания конфига в systemd-networkd  
-    with open(path_dhcp, 'w') as f:
-        f.write("""
-[Match]
-Name=en*
- 
-[Network]
-DHCP=yes
-""")
+    device()
 
 
 
@@ -146,7 +147,6 @@ def kill(id_proccess: int) -> int:
 def check_locale() -> int:
     with open("/etc/locale.gen", "r") as f:
         if "#ru_RU.UTF-8 UTF-8" in f.read():
-            print ("locale find")
             return 1
         else:
             return 0

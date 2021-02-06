@@ -25,6 +25,7 @@ from input_while import input_y_n
 
 try:
     russian_locale()
+    status_function()
     check_root()
     #-----------------------
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
