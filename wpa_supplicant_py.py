@@ -26,10 +26,13 @@ from daemon import auto_wpa
 from input_while import input_y_n
 
 try:
+
     russian_locale()
-    status_function()
     check_root()
+    status_function()
+
     #-----------------------
+
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
     path_wireless = "/etc/systemd/network/25-wireless.network" 
 
@@ -180,8 +183,6 @@ try:
         status_daemon = write_daemon(device = device, path = path)    
         auto_wpa(print_output = True)    
     
-    default_locale()    
 except (KeyboardInterrupt, EOFError):
     print ()
     print_arr("Остановлено!", color = "red")
-    default_locale()

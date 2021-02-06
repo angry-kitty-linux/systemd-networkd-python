@@ -10,7 +10,6 @@ def KeyboardError():
             except (KeyboardInterrupt, EOFError):
                 print()
                 print_arr("Остановлено!", color = "red")
-                default_locale()
                 exit()
         return wrap2
     return wrap
