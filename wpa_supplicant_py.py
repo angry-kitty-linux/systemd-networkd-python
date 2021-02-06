@@ -24,6 +24,7 @@ from daemon import write_daemon
 from daemon import auto_wpa
 
 from input_while import input_y_n
+from input_while import input_list
 
 try:
 
@@ -121,55 +122,23 @@ try:
             if len(profiles_dir) > 1:
                 profiles_supl = [line.replace("wpa_supplicant-", "")[:-5] for line in profiles_dir]
                 profiles = [line[:line.rfind("-")] for line in profiles_supl]
-                print_arr("Найдено больше одного профиля, какой желаете запустить?", color = "yellow")
                     
-                print()
-                print_arr("-" * 25, color = "green")
-                for ind, value in enumerate(profiles, 1):
-                    print_arr(f"[{ind}] ", value, color = "red", arrow = False)
-                print_arr("-" * 25, color = "green")
+                input_list("Найдено больше одного профиля, какой желаете запустить?",
+                           profiles, color = "yellow")
 
-                while True:
-                    try:
-                        user_choice = input("> ")
-                        user_choice = int(user_choice)
-                            
-                        if user_choice < 1 or user_choice > ind and len(str(user_choice)) < 3:
-                            print_arr(f"{user_choice} не существует!", color = "red")
-                            
-                        else:
-                            name_wifi = profiles_supl[user_choice - 1]
-                            device = name_wifi[name_wifi.rfind("-") + 1:]
-                            name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
-                            path = f"/etc/wpa_supplicant/{name_wifi}"
-                            break
+                name_wifi = profiles_supl[user_choice - 1]
+                device = name_wifi[name_wifi.rfind("-") + 1:]
+                name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
+                path = f"/etc/wpa_supplicant/{name_wifi}"
 
-                    except ValueError as e:
-                        if str(user_choice) not in profiles:                   
-                            print_arr(f"{user_choice} не существует!", color = "red")
-                            
-                        else: 
-                            name_wifi = [line for line in profiles_supl if user_choice in line]
-                            if len(name_wifi) > 1:
-                                print_arr("Ошибка! Обнаружено несколько одинаковых профилей!", color = "red")
-                                exit()
-
-                            if len(name_wifi) == 1:   # Знаю, есть else, но не хочу делать нечитаемым код
-                                index = name_wifi[0].rfind("-") + 1
-                                device = name_wifi[0][index:]
-                                name_wifi = "wpa_supplicant-{}.conf".format(name_wifi[0])
-                                path = f"/etc/wpa_supplicant/{name_wifi}"
-                            break
                 
-                if len(profiles_dir) == 1:
-                    index = slice(14, -5)
-                    print_arr("Обнаружен единственный профиль. Подключаю...", color = "green")
-                    path = f"/etc/wpa_supplicant/{profiles_dir[0]}"
-                    device = profiles_dir[0][index]
-                    device = device[device.rfind("-") + 1:]
+            if len(profiles_dir) == 1:
+                index = slice(14, -5)
+                print_arr("Обнаружен единственный профиль. Подключаю...", color = "green")
+                path = f"/etc/wpa_supplicant/{profiles_dir[0]}"
+                device = profiles_dir[0][index]
+                device = device[device.rfind("-") + 1:]
 
-            else:
-                print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
 
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
