@@ -8,6 +8,7 @@ from connection import check_connect
 from typing import Union
 import subprocess
 import re
+import psutil
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
@@ -103,7 +104,7 @@ update_config=1
 def ppid() -> Union[int]:
     for proc in psutil.pids():
         p = psutil.Process(proc)
-        if 'wpa_supplicant' in str(p.name):
+        if 'wpa_supplicant' == str(p.name):
             return p.pid
 
 def check_service() -> int:
