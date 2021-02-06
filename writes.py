@@ -148,7 +148,6 @@ def check_locale() -> int:
         if "#ru_RU.UTF-8 UTF-8" in f.read():
             return 1
         else:
-            print (True)
             return 0
     
 def russian_locale() -> int:
@@ -168,6 +167,7 @@ def russian_locale() -> int:
             with open("/etc/locale.gen", "w") as f:
                 file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
                 print(file_read, file = f)
+
             subprocess.check_call(["locale-gen"])
         
         subprocess.check_call(["setfont", "cyr-sun16"])
