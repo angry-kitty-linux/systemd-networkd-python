@@ -101,10 +101,10 @@ update_config=1
         return True
 
 
-def ppid() -> Union[int]:
+def ppid() -> int:
     for proc in psutil.pids():
         p = psutil.Process(proc)
-        if 'wpa_supplicant' == str(p.name):
+        if 'wpa_supplicant_' in str(p.name):
             return p.pid
 
 def check_service() -> int:

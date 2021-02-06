@@ -2,6 +2,7 @@
 
 import os
 import getpass
+import subprocess
 
 from colors import print_arr
 
@@ -34,7 +35,7 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_wpa = ppid()
-        if ppid_wpa != None:
+        if ppid_wpa != None:    
             print_arr("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
             
             kill_internet(ppid_wpa)
@@ -60,7 +61,7 @@ try:
     #########################
     # Добавление в автозагрузку
     print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color = "green")
-    os.system("systemctl enable --now systemd-networkd.service")
+    subprocess.check_call(["systemctl", "enable", "--now", "systemd-networkd.service"])
     # Создание ссылки
     os.system("ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf")
     # Запуск systemd-resolved / автозагрузка
