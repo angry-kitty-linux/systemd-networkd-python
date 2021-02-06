@@ -146,6 +146,7 @@ def kill(id_proccess: int) -> int:
 def check_locale() -> int:
     with open("/etc/locale.gen", "r") as f:
         if "#ru_RU.UTF-8 UTF-8" in f.read():
+            print ("locale find")
             return 1
         else:
             return 0
