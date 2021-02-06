@@ -134,7 +134,7 @@ def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
     try:
         devnull = open(os.devnull, "wb")
-        if check_service == 1:
+        if check_service() == 1:
             subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
                                     stderr = devnull, stdout = devnull)
         
