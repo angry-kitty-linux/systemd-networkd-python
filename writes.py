@@ -3,6 +3,7 @@
 import getpass
 from colors import print_arr
 from input_while import input_y_n
+from input_while import input_list 
 import os
 from connection import check_connect
 from typing import Union
@@ -23,6 +24,7 @@ def check_root():
         print_arr("Для работоспособности программы Вам требуется root", color = "red")
         exit()
 
+
 def device():
 
     global device
@@ -33,7 +35,12 @@ def device():
     if len(device_list) == 1:
         device = device_list[0]
     else:
-        print_arr(text = "Обнаружено несколько модулей WI-FI, выберите нужный!", color = "yellow")
+        device = input_list("Обнаружено несколько модулей WI-FI, выберите нужный!", 
+                   device_list,   # Список с модулями
+                   color = "yellow")
+
+        device = device_list[device - 1] # В функции отчет выполняется с 1, поэтому `- 1`
+
 
 def write_dhcp(): # Функция, для создания конфига в systemd-networkd  
     with open(path_dhcp, 'w') as f:
@@ -44,6 +51,7 @@ Name=en*
 [Network]
 DHCP=yes
         """)
+
 
 def status_function():
     global psutil
@@ -77,7 +85,6 @@ def status_function():
     device()
 
 
-
 def write_wireless():
     with open(path_wireless, "w") as f:
         f.write(f"""
@@ -86,6 +93,7 @@ Name={device}
 [Network]
 DHCP=ipv4
 """)
+
 
 def write_profile(ssid:str, password:str, replace = False) -> bool:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
@@ -110,6 +118,7 @@ def ppid() -> int:
         if 'wpa_supplicant' == str(p.name()):
             return p.pid
 
+
 def check_service() -> int:
     known_cgroups = set()
     for pid in psutil.pids():
@@ -133,6 +142,19 @@ def check_service() -> int:
             return 0
 
 
+def extra_kill() -> int:
+    
+    """
+    Функции для просмотра /run/wpa_supplicant
+    """
+    
+    if os.path.exists("/run/wpa_supplicant"):
+        os.remove("/run/wpa_supplicant")
+        return 1
+    else:
+        return 0
+
+
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
     try:
@@ -143,10 +165,18 @@ def kill(id_proccess: int) -> int:
         
         process = psutil.Process(id_proccess)
         process.kill()
+        
+        if check_connect(timeout = 0, print_output = False) == 1:
+            status_kill = extra_kill()
+        
+        if status_kill == 0:
+            print_arr("Не получилось отключится, прерывание!", color = "red")
+            exit()
 
         return 1
     except:
         return 0
+
 
 def default_locale() -> int:
     
@@ -156,13 +186,15 @@ def default_locale() -> int:
 
     subprocess.check_call(["setfont"])
 
+
 def check_locale() -> int:
     with open("/etc/locale.gen", "r") as f:
         if "#ru_RU.UTF-8 UTF-8" in f.read():
             return 1
         else:
             return 0
-    
+
+
 def russian_locale() -> int:
     
     """

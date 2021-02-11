@@ -33,7 +33,6 @@ def input_list(text_quest:str, text: list[str], color: str) -> int:
     
     print_arr(text_quest, color = color)
     
-    print()
     print_arr("-" * 25, color = "green")
     for ind, value in enumerate(text, 1):
         print_arr(f"[{ind}] ", value, color = "red", arrow = False)

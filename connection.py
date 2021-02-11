@@ -9,6 +9,7 @@ from typing import Union
 import writes
 from input_while import input_y_n
 
+
 def check_connect(timeout = 10, print_output = True) -> int:
     
     timeout: "Задержка (wpa_supplicant не сразу включается)"
@@ -48,6 +49,7 @@ def connect(device:str, path:str, print_output = True) -> int:
             print_arr(output, color = "red")
             print_arr("Не получилось подключится ): ", color = "red")
         return 0
+
 
 def kill_internet(ppid:int, print_output = True) -> int:
     print_output: "Печать вывода"
