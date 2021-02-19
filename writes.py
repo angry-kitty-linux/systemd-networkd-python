@@ -10,7 +10,7 @@ from connection import check_connect
 from typing import Union
 import subprocess
 import re
-
+import shutil
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
@@ -121,23 +121,9 @@ def ppid() -> int:
 
 
 def check_service() -> int:
-    known_cgroups = set()
     for pid in psutil.pids():
-        try:
-            cgroups = open('/proc/%d/cgroup' % pid, 'r').read()
-        except IOError:
-            continue
-        systemd_name_match = re.search('^1:name=systemd:(/.+)$', cgroups, re.MULTILINE)
-        if systemd_name_match is None:
-            continue
-        systemd_name = systemd_name_match.group(1)
-        if systemd_name in known_cgroups:
-            continue 
-        if not systemd_name.endswith('.service'):
-            continue 
-        known_cgroups.add(systemd_name)
-
-        if "wpa_supplicant_python.service" in systemd_name:
+        p = psutil.Process(pid)
+        if "wpa_supplicant_python.service" in p.name(): 
             return 1
         else:
             return 0
@@ -150,7 +136,7 @@ def extra_kill() -> int:
     """
     
     if os.path.exists("/run/wpa_supplicant"):
-        os.remove("/run/wpa_supplicant")
+        shutil.rmtree("/run/wpa_supplicant")
         return 1
     else:
         return 0
@@ -158,26 +144,27 @@ def extra_kill() -> int:
 
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
-    try:
-        
-        if check_service() == 1:
-            subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
+    #try:
+    if check_service() == 1:
+        subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
                                     stderr = devnull, stdout = devnull)
         
-        process = psutil.Process(id_proccess)
-        process.kill()
+    process = psutil.Process(id_proccess)
+    process.kill()
         
-        if check_connect(timeout = 0, print_output = False) == 1:
-            status_kill = extra_kill()
+    if check_connect(timeout = 0, print_output = False) == 1:
+        status_kill = extra_kill()
         
-        if status_kill == 0:
-            print_arr("Не получилось отключится, прерывание!", color = "red")
-            exit()
+    if status_kill == 0:
+        print_arr("Не получилось отключится, прерывание!", color = "red")
+        exit()
 
-        return 1
-    except:
+    return 1
+    """
+    except Exception as e:
+        print_arr (e, color = "red")
         return 0
-
+    """
 
 def default_locale() -> int:
     
