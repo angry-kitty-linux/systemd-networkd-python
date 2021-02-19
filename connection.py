@@ -69,6 +69,7 @@ def kill_internet(ppid:int, print_output = True) -> int:
         return 0
                 
 
+<<<<<<< HEAD
 def watch_ssid(output:"Вывод" = True) -> int:
     """
     Функция для просмотра SSID
@@ -165,3 +166,6 @@ def watch_ssid(output:"Вывод" = True) -> int:
     else:
         print_arr (out[1], color = "red")
         print_arr("Не удалось просканировать сети!", color = "red")
+=======
+
+>>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
