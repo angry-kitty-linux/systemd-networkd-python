@@ -122,30 +122,12 @@ def ppid() -> int:
 
 
 def check_service() -> int:
+    known_cgroups = set()
     for pid in psutil.pids():
         p = psutil.Process(pid)
         if "wpa_supplicant_python.service" in p.name(): 
-            known_cgroups = set()
-    for pid in psutil.pids():
-        try:
-            cgroups = open('/proc/%d/cgroup' % pid, 'r').read()
-        except IOError:
-            continue
-        systemd_name_match = re.search('^1:name=systemd:(/.+)$', cgroups, re.MULTILINE)
-        if systemd_name_match is None:
-            continue
-        systemd_name = systemd_name_match.group(1)
-        if systemd_name in known_cgroups:
-            continue 
-        if not systemd_name.endswith('.service'):
-            continue 
-        known_cgroups.add(systemd_name)
-
-        if "wpa_supplicant_python.service" in systemd_name:
             return 1
-        else:
-            return 0
-
+    return 0
 
 def extra_kill() -> int:
     
