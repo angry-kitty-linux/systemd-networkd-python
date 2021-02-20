@@ -20,10 +20,7 @@ from writes import default_locale
 from connection import connect
 from connection import check_connect
 from connection import kill_internet
-<<<<<<< HEAD
 from connection import watch_ssid
-=======
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
 
 from daemon import write_daemon
 from daemon import auto_wpa
@@ -36,10 +33,7 @@ try:
     russian_locale()
     check_root()
     status_function()
-<<<<<<< HEAD
-=======
 
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
     #-----------------------
 
     path_dhcp = "/etc/systemd/network/50-dhcp.network"

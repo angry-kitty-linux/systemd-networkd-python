@@ -10,11 +10,8 @@ from connection import check_connect
 from typing import Union
 import subprocess
 import re
-<<<<<<< HEAD
 import shutil
-=======
 
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
@@ -125,12 +122,10 @@ def ppid() -> int:
 
 
 def check_service() -> int:
-<<<<<<< HEAD
     for pid in psutil.pids():
         p = psutil.Process(pid)
         if "wpa_supplicant_python.service" in p.name(): 
-=======
-    known_cgroups = set()
+            known_cgroups = set()
     for pid in psutil.pids():
         try:
             cgroups = open('/proc/%d/cgroup' % pid, 'r').read()
@@ -147,7 +142,6 @@ def check_service() -> int:
         known_cgroups.add(systemd_name)
 
         if "wpa_supplicant_python.service" in systemd_name:
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
             return 1
         else:
             return 0
@@ -160,11 +154,8 @@ def extra_kill() -> int:
     """
     
     if os.path.exists("/run/wpa_supplicant"):
-<<<<<<< HEAD
         shutil.rmtree("/run/wpa_supplicant")
-=======
         os.remove("/run/wpa_supplicant")
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
         return 1
     else:
         return 0
@@ -172,7 +163,6 @@ def extra_kill() -> int:
 
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
-<<<<<<< HEAD
     #try:
     if check_service() == 1:
         subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
@@ -194,7 +184,6 @@ def kill(id_proccess: int) -> int:
         print_arr (e, color = "red")
         return 0
     """
-=======
     try:
         
         if check_service() == 1:
@@ -215,7 +204,6 @@ def kill(id_proccess: int) -> int:
     except:
         return 0
 
->>>>>>> e77968b333a911e7786499eb7dc6a9e6620b3747
 
 def default_locale() -> int:
     
