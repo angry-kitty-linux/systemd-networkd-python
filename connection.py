@@ -69,18 +69,18 @@ def kill_internet(ppid:int, print_output = True) -> int:
         return 0
                 
 
-def watch_ssid(output:"Вывод" = True) -> int:
+def watch_ssid() -> int:
     """
     Функция для просмотра SSID
     """
 
     out = os.popen("wpa_cli scan").read().split("\n")
     if "OK" in out[1]:
-        if output is True:
-            print_arr("Идет поиск WI-FI сетей...", color = "yellow")
+        print_arr("Идет поиск WI-FI сетей...", color = "yellow")
 
         time.sleep(2)
-        wifi_list = os.popen("wpa_cli scan_results").read().split("\n")
+        wifi_list = os.popen("wpa_cli scan_results").read()
+        wifi_list = wifi_list.split("\n")
         wifi_list_dirty = wifi_list[2:]
         wifi_list_dirty = [[line.replace('\t', " ")] for line in wifi_list_dirty]
         
@@ -152,6 +152,7 @@ def watch_ssid(output:"Вывод" = True) -> int:
                     
                     elif "[WPA-PSK-CCMP]" in security or "[WPA2-PSK-CCMP]"in security:
                         text = "WPA/WPA2" 
+                    
 
                     text = print_arr(text, color = "red", return_color = True).ljust(12)
                     print(f" {text} ".ljust(20, "|"), end = "")
@@ -159,10 +160,12 @@ def watch_ssid(output:"Вывод" = True) -> int:
                     
                     # SSID сетей
                     text = print_arr(ssid, color = "blue", return_color = True).center(35)
+                    if ssid == "":
+                        text = print_arr("<SSID не обнаружен!>", color = "red", return_color = True).center(35)
+
                     print (f"{text}".ljust(len(text) + 1, "|"))
         print ()
 
     else:
         print_arr (out[1], color = "red")
         print_arr("Не удалось просканировать сети!", color = "red")
-
