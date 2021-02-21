@@ -145,27 +145,7 @@ def extra_kill() -> int:
 
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
-    #try:
-    if check_service() == 1:
-        subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
-                                    stderr = devnull, stdout = devnull)
-        
-    process = psutil.Process(id_proccess)
-    process.kill()
-        
-    if check_connect(timeout = 0, print_output = False) == 1:
-        status_kill = extra_kill()
-        
-    if status_kill == 0:
-        print_arr("Не получилось отключится, прерывание!", color = "red")
-        exit()
 
-    return 1
-    """
-    except Exception as e:
-        print_arr (e, color = "red")
-        return 0
-    """
     try:
         
         if check_service() == 1:
@@ -175,12 +155,12 @@ def kill(id_proccess: int) -> int:
         process = psutil.Process(id_proccess)
         process.kill()
         
-        if check_connect(timeout = 0, print_output = False) == 1:
+        if check_connect(timeout = 1.5, print_output = False) == 1:
             status_kill = extra_kill()
         
-        if status_kill == 0:
-            print_arr("Не получилось отключится, прерывание!", color = "red")
-            exit()
+            if status_kill == 0:
+                print_arr("Не получилось отключится, прерывание!", color = "red")
+                exit()
 
         return 1
     except:
