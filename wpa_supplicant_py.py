@@ -160,7 +160,6 @@ try:
 
     if status_connect == 1:
         status_daemon = write_daemon(device = device, path = path)    
-        auto_wpa(print_output = True)    
     
 except (KeyboardInterrupt, EOFError):
     print ()
