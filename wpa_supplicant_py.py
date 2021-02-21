@@ -103,7 +103,9 @@ try:
     # Перезапуск службы
     os.system("systemctl restart systemd-networkd")
     #####
-
+    
+    #ssids = watch_ssid()
+    #ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
     print_arr("Теперь введите SSID (название точки доступа)", color = "green")
     ssid = input("> ")
     print_arr(f"Введите пароль от {ssid}", color = "green")

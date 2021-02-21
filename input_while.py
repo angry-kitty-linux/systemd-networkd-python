@@ -26,7 +26,7 @@ def input_y_n(text: str, color: str):
             print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
 
 @KeyboardError()
-def input_list(text_quest:str, text: List[str], color: str) -> int:
+def input_list(text_quest:str, text: List[str], color: str, print_output:"Вывод" = True) -> int:
     
     text_quest: "Вопрос"
     text: "Варианты ответов"
@@ -35,10 +35,14 @@ def input_list(text_quest:str, text: List[str], color: str) -> int:
     
     print_arr(text_quest, color = color)
     
-    print_arr("-" * 25, color = "green")
-    for ind, value in enumerate(text, 1):
-        print_arr(f"[{ind}] ", value, color = "red", arrow = False)
-    print_arr("-" * 25, color = "green")
+    if print_output is True:
+        print_arr("-" * 25, color = "green")
+        for ind, value in enumerate(text, 1):
+            print_arr(f"[{ind}] ", value, color = "red", arrow = False)
+        print_arr("-" * 25, color = "green")
+
+    if print_output is False:
+        ind = len(text)
 
     while True:
         try:

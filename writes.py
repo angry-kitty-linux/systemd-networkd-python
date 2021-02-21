@@ -74,8 +74,8 @@ def status_function():
                     import psutil
                 except FileNotFoundError:
                     print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
-                    subprocess.check_call(["curl", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], stdout=devnull, stderr=devnull)
-                    subprocess.check_call(["python", "get-pip.py"], stderr = devnull, stdout = devnull)
+                    subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], stdout=devnull, stderr=devnull)
+                    subprocess.check_call(["python3", "get-pip.py"], stderr = devnull, stdout = devnull)
                     subprocess.check_call(["pip", "install", "psutil"], stdout = devnull, stderr = devnull)
                     print_arr("Psutil установлен!", color = "green")
                     os.remove("get-pip.py")
