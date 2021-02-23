@@ -80,7 +80,7 @@ def status_function():
             if check_connect(timeout = 0, print_output = False):
 
                 if check_pip() == 0:
-                    print_arr("pip не найден, загружаю...", color = "green")
+                    print_arr("Pip не найден, загружаю...", color = "green")
                     subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"],
                                           stdout = devnull, stderr = devnull)
                     subprocess.check_call(["python3", "get-pip.py"],
