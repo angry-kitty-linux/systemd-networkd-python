@@ -17,6 +17,6 @@ Systemd-networkd-python
 
 `$ cd systemd-networkd-python`
 
-`$ sudo ./systemd-networkd-python`
+`$ sudo python3 systemd-networkd-python`
 
 
