@@ -20,3 +20,12 @@ Systemd-networkd-python
 `$ sudo python3 systemd-networkd-python`
 
 
+Возможные проблемы
+---------------------
+
+Если вы используете Ubuntu-подобные системы, могут возникнуть проблемы при установке pip.
+Что-то типо этого:
+`ModuleNotFoundError: No module named 'distutils.util'`
+
+Чтобы это исправить вам нужно прописать следующую команду:
+`$ sudo apt install python3-distutils`
