@@ -54,6 +54,17 @@ Name=en*
 DHCP=yes
         """)
 
+def check_pip() -> int:
+    """
+    Думаю из названия функции все ясно)
+    """
+
+    try:
+        subprocess.check_call(["pip"], stdout = devnull, stderr = devnull)
+        return 1
+    except FileNotFoundError:
+        return 0
+
 
 def status_function():
     global psutil
@@ -61,31 +72,35 @@ def status_function():
     """
     Функция для того, чтобы сообщить всем остальным использовать локальную версию
     """
-
     try:
-        import psutil
-    except ModuleNotFoundError:
-        print_arr("Psutil не найден в системе!", color = "red")
-        status_choice = input_y_n("Желаете использовать pip, для установки? (y, n)", color = "yellow")
-        if status_choice == 1:
+        try:
+            import psutil 
+        except ModuleNotFoundError:
+            print_arr("Psutil не найден в системе!", color = "red")
             if check_connect(timeout = 0, print_output = False):
-                try:
-                    subprocess.check_call(["pip", "install", "psutil"])
-                    import psutil
-                except FileNotFoundError:
-                    print_arr("У вас не установлен pip. Устанавливаю...", color = "green")
-                    subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"], stdout=devnull, stderr=devnull)
-                    subprocess.check_call(["python3", "get-pip.py"], stderr = devnull, stdout = devnull)
-                    subprocess.check_call(["pip", "install", "psutil"], stdout = devnull, stderr = devnull)
-                    print_arr("Psutil установлен!", color = "green")
-                    os.remove("get-pip.py")
 
-                    import psutil
+                if check_pip() == 0:
+                    print_arr("pip не найден, загружаю...", color = "green")
+                    subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"],
+                                          stdout = devnull, stderr = devnull)
+                    subprocess.check_call(["python3", "get-pip.py"],
+                                          stdout = devnull, stderr = devnull)
+
+                subprocess.check_call(["pip", "install", "psutil"],
+                                      stdout = devnull, stderr = devnull)     
+                import psutil
+                os.remove("get-pip.py")                
+                print_arr("Модуль psutil - установлен.", color = "green")
             else:
                 print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
                 import psutil_loc as psutil
-    device()
+    
+        device()
 
+    except Exception as e:
+        print_arr(e, color = "red")
+        print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
+        import psutil_loc as psutil
 
 def write_wireless():
     with open(path_wireless, "w") as f:
