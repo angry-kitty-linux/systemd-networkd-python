@@ -11,7 +11,7 @@ from typing import Union
 import subprocess
 import re
 import shutil
-
+import sys
 
 path_dhcp = "/etc/systemd/network/50-dhcp.network"
 path_wireless = "/etc/systemd/network/25-wireless.network"
@@ -65,6 +65,16 @@ def check_pip() -> int:
     except FileNotFoundError:
         return 0
 
+def check_distutils() -> int:
+    """
+    Для определения модуля distutils (нужен для установки pip)
+    """
+    modules = s.modules.keys()
+    for module in modules:
+        if module == "distutils": return 1 
+        else: 
+            return 0
+
 
 def status_function():
     global psutil
@@ -83,8 +93,9 @@ def status_function():
                     print_arr("Pip не найден, загружаю...", color = "green")
                     subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"],
                                           stdout = devnull, stderr = devnull)
-                    subprocess.check_call(["python3", "get-pip.py"],
-                                          stdout = devnull, stderr = devnull)
+                    if check_distutils() == 1:
+                        subprocess.check_call(["python3", "get-pip.py"],
+                                            stdout = devnull, stderr = devnull)
 
                 subprocess.check_call(["pip", "install", "psutil"],
                                       stdout = devnull, stderr = devnull)     
@@ -224,4 +235,6 @@ def russian_locale() -> int:
         return 1
     except (FileNotFoundError, subprocess.CalledProcessError) :
         return 0 
+
+
 
