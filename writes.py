@@ -65,6 +65,19 @@ def check_pip() -> int:
     except FileNotFoundError:
         return 0
 
+
+def distribution() -> str:
+    """
+    Определение дистрибутива
+    """
+    
+    with open("/etc/os-release") as f:
+        r = f.read()
+        distr = r[r.find('NAME="') + 6 :r.find("\n") - 1]
+    
+    return distr
+
+
 def check_distutils() -> int:
     """
     Для определения модуля distutils (нужен для установки pip)
@@ -96,6 +109,11 @@ def status_function():
                     if check_distutils() == 1:
                         subprocess.check_call(["python3", "get-pip.py"],
                                             stdout = devnull, stderr = devnull)
+                    else:
+                       distr = distribution()
+                       if distr == "Ubuntu":
+                            subprocess.check_call(["apt", "install", "python3-distutils"],
+                                                  stdout = devnull, stderr = devnull)
 
                 subprocess.check_call(["pip", "install", "psutil"],
                                       stdout = devnull, stderr = devnull)     
@@ -235,6 +253,5 @@ def russian_locale() -> int:
         return 1
     except (FileNotFoundError, subprocess.CalledProcessError) :
         return 0 
-
 
 
