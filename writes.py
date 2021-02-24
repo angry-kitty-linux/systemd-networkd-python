@@ -69,7 +69,7 @@ def check_distutils() -> int:
     """
     Для определения модуля distutils (нужен для установки pip)
     """
-    modules = s.modules.keys()
+    modules = sys.modules.keys()
     for module in modules:
         if module == "distutils": return 1 
         else: 
