@@ -111,9 +111,13 @@ def status_function():
                                             stdout = devnull, stderr = devnull)
                     else:
                        distr = distribution()
-                       if distr == "Ubuntu":
-                            subprocess.check_call(["apt", "install", "python3-distutils"],
-                                                  stdout = devnull, stderr = devnull)
+                       if distr == "Ubuntu" or distr == "Debian":
+                           subprocess.check_call(["apt", "install", "python3-distutils"],
+                                                 stdout = devnull, stderr = devnull
+
+                     if check_distutils() == 1:
+                        subprocess.check_call(["python3", "get-pip.py"],
+                                            stdout = devnull, stderr = devnull)                                                 stdout = devnull, stderr = devnull)
 
                 subprocess.check_call(["pip", "install", "psutil"],
                                       stdout = devnull, stderr = devnull)     
