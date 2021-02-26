@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import getpass
 import subprocess
 
 from colors import print_arr
@@ -34,7 +33,7 @@ try:
     check_root()
     status_function()
 
-    #-----------------------
+    # -----------------------
 
     path_dhcp = "/etc/systemd/network/50-dhcp.network"
     path_wireless = "/etc/systemd/network/25-wireless.network" 
@@ -72,15 +71,24 @@ try:
     #########################
     # Добавление в автозагрузку
     print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color = "green")
-    subprocess.check_call(["systemctl", "enable", "--now", "systemd-networkd.service"],
-                          stdout = devnull, stderr = devnull)
+    subprocess.check_call(
+                        ["systemctl", "enable", "--now", "systemd-networkd.service"], 
+                        stdout = devnull, 
+                        stderr = devnull
+                        )
     # Создание ссылки
-    subprocess.check_call(["ln", "-snf", "/run/systemd/resolve/resolv.conf", "/etc/resolv.conf"],
-                          stdout = devnull, stderr = devnull)
+    subprocess.check_call(
+                          ["ln", "-snf", "/run/systemd/resolve/resolv.conf", "/etc/resolv.conf"],
+                          stdout = devnull, 
+                          stderr = devnull
+                         )
 
     # Запуск systemd-resolved / автозагрузка
-    subprocess.check_call(["systemctl", "enable", "--now", "systemd-resolved.service"],
-                          stdout = devnull, stderr = devnull)
+    subprocess.check_call(
+                          ["systemctl", "enable", "--now", "systemd-resolved.service"],
+                          stdout = devnull, 
+                          stderr = devnull
+                         )
     #########################
 
     # Проверка на существование ..../25-wireless.network
@@ -104,8 +112,8 @@ try:
     os.system("systemctl restart systemd-networkd")
     #####
     
-    #ssids = watch_ssid()
-    #ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
+    # ssids = watch_ssid()
+    # ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
     print_arr("Теперь введите SSID (название точки доступа)", color = "green")
     ssid = input("> ")
     print_arr(f"Введите пароль от {ssid}", color = "green")
@@ -157,12 +165,12 @@ try:
     status_connect = connect(device, path)
 
     if status_connect == 0:
-        print_arr ("device - ", device, color = "yellow")
+        print_arr("device - ", device, color = "yellow")
         print_arr("path - ", path, color = "yellow")
 
     if status_connect == 1:
         status_daemon = write_daemon(device = device, path = path)    
     
 except (KeyboardInterrupt, EOFError):
-    print ()
+    print()
     print_arr("Остановлено!", color = "red")
