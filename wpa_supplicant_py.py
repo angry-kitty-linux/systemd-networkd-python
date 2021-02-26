@@ -116,12 +116,14 @@ try:
     if user_choice == 1:
         ssids = watch_ssid()
         ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
-
+        ssid = ssids[ssid - 1]
+        print_arr(ssid, "Выбранный", color = "green")
     if user_choice == 0:
         print_arr("Теперь введите SSID (название точки доступа)", color = "green")
         ssid = input("> ")
-        print_arr(f"Введите пароль от {ssid}", color = "green")
-        password = input("> ")
+    
+    print_arr(f"Введите пароль от {ssid}", color = "green")
+    password = input("> ")
     
     # Создание профиля
     if write_profile(ssid, password):
