@@ -96,7 +96,6 @@ try:
     
     if bool_path is True:
         print_arr("Обнаружен 25-wireless.network()", color = "yellow")
-
         user_choice = input_y_n("Желаете перезаписать? (y, n)", color = "yellow")
 
         if user_choice == 1:
@@ -117,7 +116,6 @@ try:
         ssids = watch_ssid()
         ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
         ssid = ssids[ssid - 1]
-        print_arr(ssid, "Выбранный", color = "green")
     if user_choice == 0:
         print_arr("Теперь введите SSID (название точки доступа)", color = "green")
         ssid = input("> ")

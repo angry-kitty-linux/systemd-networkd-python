@@ -208,6 +208,7 @@ def kill(id_proccess: int) -> int:
     try:
         
         if check_service() == 1:
+            print ("CHECK")
             subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
                                     stderr = devnull, stdout = devnull)
         
