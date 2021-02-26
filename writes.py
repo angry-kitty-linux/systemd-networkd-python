@@ -101,7 +101,6 @@ def status_function():
         except ModuleNotFoundError:
             print_arr("Psutil не найден в системе!", color = "red")
             if check_connect(timeout = 0, print_output = False):
-
                 if check_pip() == 0:
                     print_arr("Pip не найден, загружаю...", color = "green")
                     subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"],
@@ -113,11 +112,11 @@ def status_function():
                        distr = distribution()
                        if distr == "Ubuntu" or distr == "Debian":
                            subprocess.check_call(["apt", "install", "python3-distutils"],
-                                                 stdout = devnull, stderr = devnull
+                                                 stdout = devnull, stderr = devnull)
 
-                     if check_distutils() == 1:
-                        subprocess.check_call(["python3", "get-pip.py"],
-                                            stdout = devnull, stderr = devnull)                                                 stdout = devnull, stderr = devnull)
+                       if check_distutils() == 1:
+                           subprocess.check_call(["python3", "get-pip.py"],
+                                                 stdout = devnull, stderr = devnull)
 
                 subprocess.check_call(["pip", "install", "psutil"],
                                       stdout = devnull, stderr = devnull)     
