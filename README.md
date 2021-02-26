@@ -38,4 +38,3 @@ Systemd-networkd-python
 | Linux Mint                 |       🤔       |
 | Debian                     |       🤔       |
 | Gentoo                     |       🤔       |
-|---------------------------------------------|
