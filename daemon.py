@@ -6,7 +6,8 @@ from colors import print_arr
 from input_while import input_y_n 
 import subprocess
 
-dev_null = open(os.devnull, "wb")
+
+from config import devnull
 
 def auto_wpa(print_output = True) -> int:
 
@@ -16,8 +17,8 @@ def auto_wpa(print_output = True) -> int:
         if print_output:
             print_arr("Добавляю в автозагрузку...", color = "green")
 
-        subprocess.check_call(["systemctl", "enable", "wpa_supplicant_python.service"], stdout = dev_null,
-                                                                                        stderr = dev_null)
+        subprocess.check_call(["systemctl", "enable", "wpa_supplicant_python.service"], stdout = devnull,
+                                                                                        stderr = devnull)
         return 1
     except subprocess.CalledProcessError as e:
         print_arr(e, color = "red")

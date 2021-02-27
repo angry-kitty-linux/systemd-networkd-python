@@ -27,6 +27,10 @@ from daemon import auto_wpa
 from input_while import input_y_n
 from input_while import input_list
 
+from config import path_dhcp
+from config import path_wireless
+from config import devnull
+
 try:
 
     russian_locale()
@@ -34,10 +38,6 @@ try:
     status_function()
 
     # -----------------------
-
-    path_dhcp = "/etc/systemd/network/50-dhcp.network"
-    path_wireless = "/etc/systemd/network/25-wireless.network" 
-    devnull = open(os.devnull, "wb")
 
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
@@ -56,10 +56,8 @@ try:
         user_choice = input_y_n("Обнаружена существующая конфигурация, перезаписать? (y, n)", color = "yellow") 
 
         if user_choice == 1: 
-            print_arr("Удаляю конфиг...", color = "green")
-            os.remove(path_dhcp)
             print_arr("Записываю конфиг...", color = "green")
-            write_dhcp()
+            write_dhcp(replace = True)
 
         if user_choice == 0:
             print_arr("OK, оставляю на месте!", color = "green")
@@ -99,8 +97,8 @@ try:
         user_choice = input_y_n("Желаете перезаписать? (y, n)", color = "yellow")
 
         if user_choice == 1:
-            os.remove(path_wireless)
-            write_wireless() 
+            print_arr("OK.", green = "color")
+            write_wireless(replace = True) 
 
     if bool_path is False:
         print_arr("Конфигурация была не найдена! Создаю...", color = "yellow")

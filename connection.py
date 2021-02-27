@@ -11,6 +11,9 @@ from typing import List
 import writes
 from input_while import input_y_n
 
+from config import path_dhcp
+from config import path_wireless
+from config import devnull
 
 def check_connect(timeout = 10, print_output = True) -> int:
     
@@ -22,9 +25,8 @@ def check_connect(timeout = 10, print_output = True) -> int:
             print_arr("Проверка соединения...", color = "yellow")
         
         time.sleep(timeout)
-        dev_null = open(os.devnull, 'wb')
 
-        subprocess.check_call(["ping", "-c 1", "eth0.me"], stdout=dev_null, stderr = dev_null)
+        subprocess.check_call(["ping", "-c 1", "eth0.me"], stdout=devnull, stderr = devnull)
         return 1
 
     except subprocess.CalledProcessError:

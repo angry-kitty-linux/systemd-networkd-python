@@ -13,16 +13,16 @@ import re
 import shutil
 import sys
 
-path_dhcp = "/etc/systemd/network/50-dhcp.network"
-path_wireless = "/etc/systemd/network/25-wireless.network"
+from config import path_dhcp
+from config import path_wireless
+from config import devnull
 
-devnull = open(os.devnull, "wb")
 
 def check_root():
-    user = getpass.getuser() # Узнаем пользователя
+    user = getpass.getuser()  # Узнаем пользователя
 
     if user != "root":
-        print_arr(f"Привет, ", user, color = "green")
+        print_arr("Привет, ", user, color = "green")
         print_arr("Для работоспособности программы Вам требуется root", color = "red")
         exit()
 
@@ -44,7 +44,12 @@ def device():
         device = device_list[device - 1] # В функции отчет выполняется с 1, поэтому `- 1`
 
 
-def write_dhcp(): # Функция, для создания конфига в systemd-networkd  
+def write_dhcp(print_output = True, replace = False): # Функция, для создания конфига в systemd-networkd  
+    if replace is True:
+        if print_output is True:
+            print_arr("Удаляю конфигурацию...", color = "green")
+        os.remove(path_dhcp)
+
     with open(path_dhcp, 'w') as f:
         f.write("""
 [Match]
@@ -146,7 +151,16 @@ def status_function():
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
         import psutil_loc as psutil
 
-def write_wireless():
+def write_wireless(
+                    print_output = True, 
+                    replace:bool = False):
+    replace:"Перезаписывать ли конфиг"
+
+    if replace is True:
+        if print_output is True:
+            print_arr("Удаляю конфиг...", color = "green")
+        os.remove(path_dhcp)
+
     with open(path_wireless, "w") as f:
         f.write(f"""
 [Match]
