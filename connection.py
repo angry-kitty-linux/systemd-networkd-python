@@ -176,6 +176,7 @@ def watch_ssid() -> Union[int, List[str]]:
             return ssids_wifi
 
         else:
+            print (out)
             print_arr (out[1], color = "red")
             print_arr("Не удалось просканировать сети!", color = "red")
         

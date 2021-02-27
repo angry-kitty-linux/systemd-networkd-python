@@ -97,7 +97,7 @@ try:
         user_choice = input_y_n("Желаете перезаписать? (y, n)", color = "yellow")
 
         if user_choice == 1:
-            print_arr("OK.", green = "color")
+            print_arr("OK.", color = "green")
             write_wireless(replace = True) 
 
     if bool_path is False:
@@ -158,6 +158,13 @@ try:
                 device = profiles_dir[0][index]
                 device = device[device.rfind("-") + 1:]
 
+    #####################
+    # Выключение службы
+    subprocess.check_call(
+                        ["systemctl", "stop", "wpa_supplicant_python.service"],
+                        stdout = devnull,
+                        stderr = devnull
+                        )
 
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
