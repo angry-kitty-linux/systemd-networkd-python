@@ -42,13 +42,13 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_wpa = ppid()
-        if ppid_wpa != None:    
+        if ppid_wpa is not None:
             kill_internet(ppid_wpa)
         
         if ppid_wpa is None:
             print_arr("Обнаружено соединение с использованием неизвестного ПО", color = "red")
             print_arr("Пожалуйста, выключите сервисы, предостовляющие интернет соединение!", color = "red")
-
+            exit()
 
     bool_path = os.path.exists(path_dhcp)
     

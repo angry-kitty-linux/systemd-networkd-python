@@ -107,7 +107,6 @@ def watch_ssid() -> Union[int, List[str]]:
                             if string.rfind("[ESS]") == -1: continue
                             else:
                                 break
-                        lenght = len(line2)
 
                         ssid_full = ""
                         for last_word in line2[number + 1:]:
@@ -115,8 +114,6 @@ def watch_ssid() -> Union[int, List[str]]:
 
                         del line2[number + 1:]
                         line2.append(ssid_full)
-                        string_ssid = number + 1
-
 
                     for mac, none, signal, security, ssid in unpack(line2):
                         counter += 1
@@ -125,13 +122,13 @@ def watch_ssid() -> Union[int, List[str]]:
                         counter_text = f"[{counter}]"
 
                         signal = int(signal[1:])
-                        #######################################################################
+                        #######################################################
                         # MAC Адресс
                         text = print_arr(mac, color = "yellow", arrow = False,
                                          return_color = True).ljust(len(mac) + 10, "|")
                         text = "{0}{2}\033[39m|\033[39m{1}".format(counter_text.center(6), text, "")
                         print (text, end = "") 
-                        #######################################################################
+                        #######################################################
                         
                         # Уровень сигнала
                         
@@ -143,9 +140,14 @@ def watch_ssid() -> Union[int, List[str]]:
                         else: color = "red"
                         ##########
                         
-                        text = print_arr(signal, color = color, return_color = True).ljust(12)
+                        text = print_arr(
+                                        signal,
+                                        color = color,
+                                        return_color = True
+                                        ).ljust(12)
+
                         print (f"  {text} |", end = "")
-                        #######################################################################
+                        #######################################################
                         
                         # Безопасность
                     
@@ -160,7 +162,7 @@ def watch_ssid() -> Union[int, List[str]]:
 
                         text = print_arr(text, color = "red", return_color = True).ljust(12)
                         print(f" {text} ".ljust(20, "|"), end = "")
-                        #######################################################################
+                        #######################################################
                         
                         # SSID сетей
                         text = print_arr(ssid, color = "blue", return_color = True).center(35)
@@ -168,7 +170,7 @@ def watch_ssid() -> Union[int, List[str]]:
                             text = print_arr("<SSID не обнаружен!>", color = "red", return_color = True).center(35)
 
                         print (f"{text}".ljust(len(text) + 1, "|"))
-            print ()
+            print()
             return ssids_wifi
 
         else:
