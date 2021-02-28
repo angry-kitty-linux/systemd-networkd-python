@@ -40,11 +40,13 @@ def device():
     if len(device_list) == 1:
         device = device_list[0]
     else:
-        device = input_list("Обнаружено несколько модулей WI-FI, выберите нужный!", 
-                   device_list,   # Список с модулями
-                   color = "yellow")
+        device = input_list(
+                            "Обнаружено несколько модулей WI-FI, выберите нужный!", 
+                            device_list,   # Список с модулями
+                            color = "yellow"
+                            )
 
-        device = device_list[device - 1] # В функции отчет выполняется с 1, поэтому `- 1`
+        device = device_list[device - 1]  # В функции отчет выполняется с 1, поэтому `- 1`
 
 
 @Check_error()
