@@ -15,6 +15,7 @@ from config import path_dhcp
 from config import path_wireless
 from config import devnull
 
+
 def check_connect(timeout = 10, print_output = True) -> int:
     
     timeout: "Задержка (wpa_supplicant не сразу включается)"
@@ -61,6 +62,11 @@ def kill_internet(ppid:int, print_output = True) -> int:
 
     status_user = input_y_n("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
     if status_user == 1:
+        subprocess.check_call(
+                            ["systemctl", "stop", "wpa_supplicant_python.service"],
+                            stdout = devnull,
+                            stderr = devnull
+                            )     # Пробуем остановить службу (если её нет, то ничего не произойдет)
         writes.kill(ppid)
         if print_output is True:
             print_arr("Соединение было разорвано!", color = "red")

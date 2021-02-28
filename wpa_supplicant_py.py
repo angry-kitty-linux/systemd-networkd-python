@@ -158,18 +158,10 @@ try:
                 device = profiles_dir[0][index]
                 device = device[device.rfind("-") + 1:]
 
-    #####################
-    # Выключение службы
-    subprocess.check_call(
-                        ["systemctl", "stop", "wpa_supplicant_python.service"],
-                        stdout = devnull,
-                        stderr = devnull
-                        )
-
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_user = ppid()
-        kill(ppid_user)
+        kill_internet(ppid_user)
 
     status_connect = connect(device, path)
 
