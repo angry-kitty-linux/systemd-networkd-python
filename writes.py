@@ -133,30 +133,31 @@ def status_function():
                                             stderr = devnull
                                             )
                     else:
-                       distr = distribution()
-                       if distr == "Ubuntu" or distr == "Debian":
-                           subprocess.check_call(
+                        distr = distribution()
+                        if distr == "Ubuntu" or distr == "Debian":
+                            subprocess.check_call(
                                                 ["apt", "install", "python3-distutils"],
                                                 stdout = devnull,
                                                 stderr = devnull
                                                 )
 
-                       if check_distutils() == 1 and status_pip == 0:
-                           subprocess.check_call(
+                        if check_distutils() == 1 and status_pip == 0:
+                            subprocess.check_call(
                                                 ["python3", "get-pip.py"],
                                                 stdout = devnull,
                                                 stderr = devnull
                                                 )
+                            os.remove("get-pip.py")  
                 
                 version = "{}.{}".format(sys.version_info.major, sys.version_info.minor)
 
                 subprocess.check_call(
-                                    [f"pip{version}", "install", "psutil"],
+                                    [f"python{version}", "-m", "pip", "install", "psutil"], 
                                     stdout = devnull,
                                     stderr = devnull
                                     )     
                 import psutil
-                os.remove("get-pip.py")                
+                              
                 print_arr("Модуль psutil - установлен.", color = "green")
             else:
                 print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
