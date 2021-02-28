@@ -119,11 +119,19 @@ def status_function():
                 status_pip = check_pip()
                 if status_pip == 0:
                     print_arr("Pip не найден, загружаю...", color = "green")
-                    subprocess.check_call(["wget", "https://bootstrap.pypa.io/get-pip.py"],
-                                          stdout = devnull, stderr = devnull)
+                    subprocess.check_call(
+                                        ["wget", "https://bootstrap.pypa.io/get-pip.py"],
+                                        stdout = devnull,
+                                        stderr = devnull
+                                        )
+
                     if check_distutils() == 1:
-                        subprocess.check_call(["python3", "get-pip.py"],
-                                            stdout = devnull, stderr = devnull)
+                        
+                        subprocess.check_call(
+                                            ["python3", "get-pip.py"],
+                                            stdout = devnull,
+                                            stderr = devnull
+                                            )
                     else:
                        distr = distribution()
                        if distr == "Ubuntu" or distr == "Debian":
@@ -139,9 +147,11 @@ def status_function():
                                                 stdout = devnull,
                                                 stderr = devnull
                                                 )
+                
+                version = "{}.{}".format(sys.version_info.major, sys.version_info.minor)
 
                 subprocess.check_call(
-                                    ["pip3", "install", "psutil"],
+                                    [f"pip{version}", "install", "psutil"],
                                     stdout = devnull,
                                     stderr = devnull
                                     )     
