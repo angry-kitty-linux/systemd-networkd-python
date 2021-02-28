@@ -15,7 +15,10 @@ from config import path_dhcp
 from config import path_wireless
 from config import devnull
 
+from wrappers import Check_error
 
+
+@Check_error()
 def check_connect(timeout = 10, print_output = True) -> int:
     
     timeout: "Задержка (wpa_supplicant не сразу включается)"
@@ -34,6 +37,7 @@ def check_connect(timeout = 10, print_output = True) -> int:
         return 0
 
 
+@Check_error()
 def connect(device:str, path:str, print_output = True) -> int:
     device: "Модуль вафли"
     path: "Путь до конфига"
@@ -56,28 +60,39 @@ def connect(device:str, path:str, print_output = True) -> int:
         return 0
 
 
+@Check_error()
 def kill_internet(ppid:int, print_output = True) -> int:
     print_output: "Печать вывода"
     ppid: "Номер процесса"
+    
+    if print_output is True:
+        status_user = input_y_n("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
+        if status_user == 1:
+            subprocess.check_call(
+                                ["systemctl", "stop", "wpa_supplicant_python.service"],
+                                stdout = devnull,
+                                stderr = devnull
+                                )     # Пробуем остановить службу (если её нет, то ничего не произойдет)
+            writes.kill(ppid)
+            print_arr("Соединение было разорвано!", color = "red")
+            return 1
 
-    status_user = input_y_n("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
-    if status_user == 1:
+        if status_user == 0:
+            if print_output is True:
+                print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
+            return 0
+    
+    if print_output is False:
         subprocess.check_call(
                             ["systemctl", "stop", "wpa_supplicant_python.service"],
                             stdout = devnull,
                             stderr = devnull
-                            )     # Пробуем остановить службу (если её нет, то ничего не произойдет)
+                            )
         writes.kill(ppid)
-        if print_output is True:
-            print_arr("Соединение было разорвано!", color = "red")
         return 1
 
-    if status_user == 0:
-        if print_output is True:
-            print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
-        return 0
-                
 
+@Check_error()
 def watch_ssid() -> Union[int, List[str]]:
     """
     Функция для просмотра SSID

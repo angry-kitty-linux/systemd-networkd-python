@@ -17,7 +17,10 @@ from config import path_dhcp
 from config import path_wireless
 from config import devnull
 
+from wrappers import Check_error
 
+
+@Check_error()
 def check_root():
     user = getpass.getuser()  # Узнаем пользователя
 
@@ -27,8 +30,8 @@ def check_root():
         exit()
 
 
+@Check_error()
 def device():
-
     global device
 
     devices = [line for line in psutil.net_if_stats()]
@@ -44,6 +47,7 @@ def device():
         device = device_list[device - 1] # В функции отчет выполняется с 1, поэтому `- 1`
 
 
+@Check_error()
 def write_dhcp(print_output = True, replace = False): # Функция, для создания конфига в systemd-networkd  
     if replace is True:
         if print_output is True:
@@ -59,6 +63,7 @@ Name=en*
 DHCP=yes
         """)
 
+@Check_error()
 def check_pip() -> int:
     """
     Думаю из названия функции все ясно)
@@ -71,6 +76,7 @@ def check_pip() -> int:
         return 0
 
 
+@Check_error()
 def distribution() -> str:
     """
     Определение дистрибутива
@@ -83,6 +89,7 @@ def distribution() -> str:
     return distr
 
 
+@Check_error()
 def check_distutils() -> int:
     """
     Для определения модуля distutils (нужен для установки pip)
@@ -94,6 +101,7 @@ def check_distutils() -> int:
             return 0
 
 
+@Check_error()
 def status_function():
     global psutil
 
@@ -151,9 +159,12 @@ def status_function():
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
         import psutil_loc as psutil
 
+
+@Check_error()
 def write_wireless(
                     print_output = True, 
                     replace:bool = False):
+
     replace:"Перезаписывать ли конфиг"
 
     if replace is True:
@@ -170,6 +181,7 @@ DHCP=ipv4
 """)
 
 
+@Check_error()
 def write_profile(ssid:str, password:str, replace = False) -> bool:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
@@ -187,13 +199,15 @@ update_config=1
         return True
 
 
+@Check_error()
 def ppid() -> int:
     for proc in psutil.pids():
-        p = psutil.Process(proc)
-        if 'wpa_supplicant' == str(p.name()):
-            return p.pid
+        proc = psutil.Process(proc)
+        if 'wpa_supplicant' == str(proc.name()):
+            return proc.pid
 
 
+@Check_error()
 def check_service() -> int:
     for pid in psutil.pids():
         p = psutil.Process(pid)
@@ -201,6 +215,8 @@ def check_service() -> int:
             return 1
     return 0
 
+
+@Check_error()
 def extra_kill() -> int:
     
     """
@@ -215,6 +231,7 @@ def extra_kill() -> int:
         return 0
 
 
+@Check_error()
 def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
 
@@ -239,6 +256,7 @@ def kill(id_proccess: int) -> int:
         return 0
 
 
+@Check_error()
 def default_locale() -> int:
     
     """
@@ -248,6 +266,7 @@ def default_locale() -> int:
     subprocess.check_call(["setfont"])
 
 
+@Check_error()
 def check_locale() -> int:
     with open("/etc/locale.gen", "r") as f:
         if "#ru_RU.UTF-8 UTF-8" in f.read():
@@ -256,6 +275,7 @@ def check_locale() -> int:
             return 0
 
 
+@Check_error()
 def russian_locale() -> int:
     
     """

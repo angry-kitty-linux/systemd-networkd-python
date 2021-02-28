@@ -161,7 +161,7 @@ try:
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:
         ppid_user = ppid()
-        kill_internet(ppid_user)
+        kill_internet(ppid_user, print_output = False)
 
     status_connect = connect(device, path)
 

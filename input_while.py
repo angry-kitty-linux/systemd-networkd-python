@@ -6,6 +6,7 @@ from colors import print_arr
 from wrappers import KeyboardError
 from typing import List
 
+
 @KeyboardError()
 def input_y_n(text: str, color: str):
     
@@ -24,6 +25,7 @@ def input_y_n(text: str, color: str):
 
         else:
             print_arr("Не понимаю о чем Вы, повторите еще раз...", color = "red")
+
 
 @KeyboardError()
 def input_list(text_quest:str, text: List[str], color: str, print_output:"Вывод" = True) -> int:
