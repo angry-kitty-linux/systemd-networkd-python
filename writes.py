@@ -96,11 +96,12 @@ def check_distutils() -> int:
     """
     Для определения модуля distutils (нужен для установки pip)
     """
-    modules = sys.modules.keys()
-    for module in modules:
-        if module == "distutils": return 1 
-        else: 
-            return 0
+    try:
+        import distutils
+        return 1
+
+    except ModuleNotFoundError:
+        return 0
 
 
 @Check_error()
@@ -128,7 +129,6 @@ def status_function():
                                         )
 
                     if check_distutils() == 1:
-                        
                         subprocess.check_call(
                                             ["python3", "get-pip.py"],
                                             stdout = devnull,
@@ -194,7 +194,7 @@ DHCP=ipv4
 """)
 
 
-@Check_error()
+#@Check_error()
 def write_profile(ssid:str, password:str, replace = False) -> bool:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
