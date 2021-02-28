@@ -134,6 +134,8 @@ def status_function():
                                             stdout = devnull,
                                             stderr = devnull
                                             )
+                        os.remove("get-pip.py")  
+
                     else:
                         distr = distribution()
                         if distr == "Ubuntu" or distr == "Debian":
