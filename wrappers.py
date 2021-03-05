@@ -28,7 +28,7 @@ def Check_error():
         def wrap2(*args, **kwargs):
             try:
                 return_status =  func(*args, **kwargs)
-            except Exception as e:
+            except TypeError as e:
                 print_arr ("Произошла ошибка!", color = "red")
                 print_arr(e, color = "red")
 

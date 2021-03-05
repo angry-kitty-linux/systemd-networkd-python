@@ -5,6 +5,7 @@ import os
 from colors import print_arr
 from wrappers import KeyboardError
 from typing import List
+import connection
 
 
 @KeyboardError()
@@ -58,3 +59,38 @@ def input_list(text_quest:str, text: List[str], color: str, print_output:"Выв
         
         except ValueError:
             print_arr(f"{user_choice} не существует!", color = "red")
+
+
+@KeyboardError()
+def password(ssid:str) -> str:
+    """ Функция для ввода пароля """
+    print_arr(f"Введите пароль от {ssid}", color = "green")
+    
+    while True:
+        user_choice = input("> ")
+
+        if len(user_choice) < 8 or len(user_choice) > 64: 
+            print_arr("Пароль должен состоять от 8 символов и до 64, ",
+            "повторите попытку!", color = "red") 
+
+        else:
+            return user_choice
+
+
+@KeyboardError()
+def ssid() -> str:
+    """ Функция для ввода ssid """
+
+    print_arr("Идёт получение доступных WI-FI....", color = "green")
+    ssids = connection.info_ssid()
+
+    print_arr("Теперь введите SSID (название точки доступа)", color = "green")
+
+    while True:
+        user_choice = input("> ")
+        
+        if user_choice not in ssids:
+            print_arr(f"{user_choice} не существует!", color = "red")
+        
+        else:
+            return user_choice

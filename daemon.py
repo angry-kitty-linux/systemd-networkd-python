@@ -4,12 +4,13 @@
 import os
 
 from colors import print_arr
-from input_while import input_y_n 
 import subprocess
 
 from config import devnull
 
 from wrappers import Check_error
+
+import input_while
 
 
 @Check_error()
@@ -48,7 +49,7 @@ WantedBy = multi-user.target
     path_daemon = "/etc/systemd/system/wpa_supplicant_python.service"
 
     if os.path.exists(path_daemon):
-        user_choice = input_y_n("Обнаружен существующий демон. Перезаписать? (y, n)", color = "yellow")
+        user_choice = input_while.input_y_n("Обнаружен существующий демон. Перезаписать? (y, n)", color = "yellow")
         
         if user_choice == 1:
             os.remove(path_daemon)
@@ -57,7 +58,7 @@ WantedBy = multi-user.target
             
             return 1
     else:
-        user_choice = input_y_n("Желаете добавить в автозагрузку? (y, n)", color = "yellow")
+        user_choice = input_while.input_y_n("Желаете добавить в автозагрузку? (y, n)", color = "yellow")
         
         if user_choice == 1:
             with open(path_daemon, "w") as f:

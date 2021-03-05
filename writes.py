@@ -4,7 +4,7 @@
 import getpass
 from colors import print_arr
 from input_while import input_y_n
-from input_while import input_list 
+from input_while import input_list
 import os
 from connection import check_connect
 from typing import Union
@@ -12,6 +12,8 @@ import subprocess
 import re
 import shutil
 import sys
+
+from writes import input_y_n
 
 from config import path_dhcp
 from config import path_wireless
@@ -41,29 +43,29 @@ def device():
         device = device_list[0]
     else:
         device = input_list(
-                            "Обнаружено несколько модулей WI-FI, выберите нужный!", 
+                            "Обнаружено несколько модулей WI-FI, выберите нужный!",
                             device_list,   # Список с модулями
                             color = "yellow"
                             )
 
-        device = device_list[device - 1]  # В функции отчет выполняется с 1, поэтому `- 1`
+        device = device_list[device - 1]  # В функции отчет выполняется с 1,
+                                          # поэтому `- 1`
 
 
 @Check_error()
-def write_dhcp(print_output = True, replace = False): # Функция, для создания конфига в systemd-networkd  
-    if replace is True:
-        if print_output is True:
-            print_arr("Удаляю конфигурацию...", color = "green")
-        os.remove(path_dhcp)
+def write_dhcp(print_output = True):  # Функция, для создания конфига в systemd-networkd
+    if print_output is True:
+        print_arr("Удаляю конфигурацию...", color = "green")
 
     with open(path_dhcp, 'w') as f:
         f.write("""
 [Match]
 Name=en*
- 
+
 [Network]
 DHCP=yes
         """)
+
 
 @Check_error()
 def check_pip() -> int:
@@ -83,11 +85,11 @@ def distribution() -> str:
     """
     Определение дистрибутива
     """
-    
+
     with open("/etc/os-release") as f:
         r = f.read()
         distr = r[r.find('NAME="') + 6 :r.find("\n") - 1]
-    
+
     return distr
 
 
@@ -109,64 +111,27 @@ def status_function():
     global psutil
 
     """
-    Функция для того, чтобы сообщить всем остальным 
+    Функция для того, чтобы сообщить всем остальным
     использовать локальную версию
     """
 
     try:
         try:
-            import psutil 
+            import psutil
         except ModuleNotFoundError:
-            print_arr("Psutil не найден в системе!", color = "red")
-            if check_connect(timeout = 0, print_output = False):
-                status_pip = check_pip()
-                if status_pip == 0:
-                    print_arr("Pip не найден, загружаю...", color = "green")
-                    subprocess.check_call(
-                                        ["wget", "https://bootstrap.pypa.io/get-pip.py"],
-                                        stdout = devnull,
-                                        stderr = devnull
-                                        )
+            print_arr("Psutil не найден в системе! Устанавливаю...", color = "red")
+            if check_connect(timeout=0, print_output = False):
 
-                    if check_distutils() == 1:
-                        subprocess.check_call(
-                                            ["python3", "get-pip.py"],
-                                            stdout = devnull,
-                                            stderr = devnull
-                                            )
-                        os.remove("get-pip.py")  
-
-                    else:
-                        distr = distribution()
-                        if distr == "Ubuntu" or distr == "Debian":
-                            subprocess.check_call(
-                                                ["apt", "install", "python3-distutils"],
-                                                stdout = devnull,
-                                                stderr = devnull
-                                                )
-
-                        if check_distutils() == 1 and status_pip == 0:
-                            subprocess.check_call(
-                                                ["python3", "get-pip.py"],
-                                                stdout = devnull,
-                                                stderr = devnull
-                                                )
-                            os.remove("get-pip.py")  
-                
-                version = "{}.{}".format(sys.version_info.major, sys.version_info.minor)
-
-                subprocess.check_call(
-                                    [f"python{version}", "-m", "pip", "install", "psutil"], 
-                                    stdout = devnull,
-                                    stderr = devnull
-                                    )     
-                import psutil
-                              
+                print_arr("Установочные файлы готовы к сборке!", color = "green")
+                print_arr("Идет сборка модуля...", color = "yellow")
+                subprocess.check_call(["bash", "install_psutil.sh"])
                 print_arr("Модуль psutil - установлен.", color = "green")
+                print_arr("Теперь снова запустите этот скрипт!", color = "yellow")
+                exit()
             else:
                 print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
                 import psutil_loc as psutil
-    
+
         device()
 
     except Exception as e:
@@ -177,7 +142,7 @@ def status_function():
 
 @Check_error()
 def write_wireless(
-                    print_output = True, 
+                    print_output = True,
                     replace:bool = False):
 
     replace:"Перезаписывать ли конфиг"
@@ -185,7 +150,7 @@ def write_wireless(
     if replace is True:
         if print_output is True:
             print_arr("Удаляю конфиг...", color = "green")
-        os.remove(path_dhcp)
+        os.remove(path_wireless)
 
     with open(path_wireless, "w") as f:
         f.write(f"""
@@ -204,13 +169,13 @@ def write_profile(ssid:str, password:str, replace = False) -> bool:
             ssid, password = (str(ssid), str(password))
             output = os.popen(f"wpa_passphrase {ssid} {password}").read()
             f.write(f"""
-ctrl_interface=/run/wpa_supplicant
+ctrl_interface=/run/wpa_supplicant GROUP=wheel
 update_config=1
 {output}
-""")    
+""")
         write_profile.__annotations__["device"] = device
         write_profile.__annotations__["path"] = path
-        
+
         return True
 
 
@@ -226,18 +191,18 @@ def ppid() -> int:
 def check_service() -> int:
     for pid in psutil.pids():
         p = psutil.Process(pid)
-        if "wpa_supplicant_python.service" in p.name(): 
+        if "wpa_supplicant_python.service" in p.name():
             return 1
     return 0
 
 
 @Check_error()
 def extra_kill() -> int:
-    
+
     """
     Функции для просмотра /run/wpa_supplicant
     """
-    
+
     if os.path.exists("/run/wpa_supplicant"):
         shutil.rmtree("/run/wpa_supplicant")
         os.remove("/run/wpa_supplicant")
@@ -251,17 +216,17 @@ def kill(id_proccess: int) -> int:
     id_proccess: "Айди процесса, для убийства"
 
     try:
-        
+
         if check_service() == 1:
-            subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"], 
+            subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"],
                                     stderr = devnull, stdout = devnull)
-        
+
         process = psutil.Process(id_proccess)
         process.kill()
-        
+
         if check_connect(timeout = 1.5, print_output = False) == 1:
             status_kill = extra_kill()
-        
+
             if status_kill == 0:
                 print_arr("Не получилось отключится, прерывание!", color = "red")
                 exit()
@@ -273,7 +238,7 @@ def kill(id_proccess: int) -> int:
 
 @Check_error()
 def default_locale() -> int:
-    
+
     """
     Функция для установки дефолтного шрифта
     """
@@ -292,7 +257,7 @@ def check_locale() -> int:
 
 @Check_error()
 def russian_locale() -> int:
-    
+
     """
     Это функция для установки русской локали
     (Чтобы не было квадратиков в tty)
@@ -302,7 +267,7 @@ def russian_locale() -> int:
         if check_locale() == 1:
             with open("/etc/locale.gen", "r") as f:
                 file_read = f.read()
-        
+
             open("/etc/locale.gen", "w").close()
 
             with open("/etc/locale.gen", "w") as f:
@@ -310,11 +275,11 @@ def russian_locale() -> int:
                 print(file_read, file = f)
 
             subprocess.check_call(["locale-gen"])
-        
+
         subprocess.check_call(["setfont", "latarcyrheb-sun16"], stderr=devnull)
 
         return 1
     except (FileNotFoundError, subprocess.CalledProcessError) :
-        return 0 
+        return 0
 
 
