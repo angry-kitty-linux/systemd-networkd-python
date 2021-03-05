@@ -177,6 +177,12 @@ ctrl_interface=/run/wpa_supplicant GROUP=wheel
 update_config=1
 {output}
 """)
+        subprocess.check_call(
+                            ["chmod", "733", path],
+                            stdout = devnull,
+                            stderr = devnull
+                            )     # Отбираем права на чтение
+
         write_profile.__annotations__["device"] = device
         write_profile.__annotations__["path"] = path
 

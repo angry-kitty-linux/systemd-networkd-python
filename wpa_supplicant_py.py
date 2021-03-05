@@ -109,7 +109,11 @@ try:
 
     #######################
     # Перезапуск службы
-    os.system("systemctl restart systemd-networkd")
+    subprocess.check_call(
+                        ["systemctl", "restart", "systemd-networkd"],
+                        stdout = devnull,
+                        stderr = devnull
+                        )
     #####
 
     #################################################################
@@ -120,52 +124,50 @@ try:
     #    ssid = input_list ("Выберите нужный SSID:", ssids, color = "yellow", print_output = False)
     #    ssid = ssids[ssid - 1]
 
-    # Ввод ssid
-    #if user_choice == 0:
-    print_arr("Введите SSID (название точки доступа)", color = "green")
-    #ssid = ssid()
-    ssid = input("> ")
-    # Ввод пароля
-    password = password(ssid)
+    profiles_dir = os.listdir("/etc/wpa_supplicant")
+
+    profile = None
+    if len(profiles_dir) >= 1:  # Если, найдено больше одного профиля:
+        profiles_supl = [line.replace("wpa_supplicant-", "")[:-5] for line in profiles_dir]
+        profiles = [line[:line.rfind("-")] for line in profiles_supl]
+        profiles.append("Добавить профиль")
+
+        profile = input_list("Найдено больше одного профиля, какой желаете запустить?",
+                    profiles, color = "yellow")
+
+        if len(profiles) != profile:
+            name_wifi = profiles_supl[profile - 1]
+            device = name_wifi[name_wifi.rfind("-") + 1:]
+            name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
+            path = f"/etc/wpa_supplicant/{name_wifi}"
+
+
+    if (len(profiles_dir) == 0  # В случае, если профилей нет
+        or
+        len(profiles) == profile): # Или в случае, если выбран 'добавить профиль':
+
+        # Ввод ssid
+        print_arr("Введите SSID (название точки доступа)", color = "green")
+        ssid = input("> ")
+        # Ввод пароля
+        password = password(ssid)
+
+        # Создание профиля
+        if write_profile(ssid, password):
+            print_arr("Профиль был успешно создан!", color = "green")
+            path = write_profile.__annotations__["path"]
+            device = write_profile.__annotations__["device"]
+
+        else:  # В случае, если профиль выбран
+            user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color = "yellow")
+            if user_choice_input == 1:
+                write_profile(ssid, password, replace = True)
+                print_arr("Перезаписано!", color = "green")
+                device = write_profile.__annotations__["device"]
+                path = write_profile.__annotations__["path"]
     #
     #################################################################
 
-    # Создание профиля
-    if write_profile(ssid, password):
-        print_arr("Профиль был успешно создан!", color = "green")
-        path = write_profile.__annotations__["path"]
-        device = write_profile.__annotations__["device"]
-
-    else:
-        user_choice = input_y_n("Профиль существует, перезаписать? (y, n)", color = "yellow")
-        if user_choice == 1:
-            write_profile(ssid, password, replace = True)
-            print_arr("Перезаписано!", color = "green")
-            device = write_profile.__annotations__["device"]
-            path = write_profile.__annotations__["path"]
-
-        if user_choice == 0:
-            print_arr("OK.", color = "green")
-            profiles_dir = os.listdir("/etc/wpa_supplicant")
-            if len(profiles_dir) > 1:
-                profiles_supl = [line.replace("wpa_supplicant-", "")[:-5] for line in profiles_dir]
-                profiles = [line[:line.rfind("-")] for line in profiles_supl]
-
-                input_list("Найдено больше одного профиля, какой желаете запустить?",
-                           profiles, color = "yellow")
-
-                name_wifi = profiles_supl[user_choice - 1]
-                device = name_wifi[name_wifi.rfind("-") + 1:]
-                name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
-                path = f"/etc/wpa_supplicant/{name_wifi}"
-
-
-            if len(profiles_dir) == 1:
-                index = slice(14, -5)
-                print_arr("Обнаружен единственный профиль. Подключаю...", color = "green")
-                path = f"/etc/wpa_supplicant/{profiles_dir[0]}"
-                device = profiles_dir[0][index]
-                device = device[device.rfind("-") + 1:]
 
     check_status = check_connect(timeout = 0, print_output = False)
     if check_status == 1:

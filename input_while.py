@@ -10,11 +10,11 @@ import connection
 
 @KeyboardError()
 def input_y_n(text: str, color: str):
-    
+
     text: "`text` будет появлятся при вопросе"
 
     print_arr(text, color = color)
-    
+
     while True:
         user_choice = input("> ").lower()
 
@@ -30,14 +30,14 @@ def input_y_n(text: str, color: str):
 
 @KeyboardError()
 def input_list(text_quest:str, text: List[str], color: str, print_output:"Вывод" = True) -> int:
-    
+
     text_quest: "Вопрос"
     text: "Варианты ответов"
 
     assert type(text) is list
-    
+
     print_arr(text_quest, color = color)
-    
+
     if print_output is True:
         print_arr("-" * 25, color = "green")
         for ind, value in enumerate(text, 1):
@@ -50,13 +50,13 @@ def input_list(text_quest:str, text: List[str], color: str, print_output:"Выв
     while True:
         try:
             user_choice = input("> ").lower()
-            
+
             if len(user_choice) > 3 or int(user_choice) <= 0 or int(user_choice) > ind:
                 raise ValueError
-            
+
             else:
                 return int(user_choice)
-        
+
         except ValueError:
             print_arr(f"{user_choice} не существует!", color = "red")
 
@@ -65,13 +65,13 @@ def input_list(text_quest:str, text: List[str], color: str, print_output:"Выв
 def password(ssid:str) -> str:
     """ Функция для ввода пароля """
     print_arr(f"Введите пароль от {ssid}", color = "green")
-    
+
     while True:
         user_choice = input("> ")
 
-        if len(user_choice) < 8 or len(user_choice) > 64: 
+        if len(user_choice) < 8 or len(user_choice) > 64:
             print_arr("Пароль должен состоять от 8 символов и до 64, ",
-            "повторите попытку!", color = "red") 
+            "повторите попытку!", color = "red")
 
         else:
             return user_choice
@@ -88,9 +88,9 @@ def ssid() -> str:
 
     while True:
         user_choice = input("> ")
-        
+
         if user_choice not in ssids:
             print_arr(f"{user_choice} не существует!", color = "red")
-        
+
         else:
             return user_choice
