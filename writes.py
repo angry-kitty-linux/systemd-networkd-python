@@ -124,7 +124,11 @@ def status_function():
 
                 print_arr("Установочные файлы готовы к сборке!", color = "green")
                 print_arr("Идет сборка модуля...", color = "yellow")
-                subprocess.check_call(["bash", "install_psutil.sh"])
+                subprocess.check_call(
+                                    ["bash", "install_psutil.sh"],
+                                    stdout = devnull,
+                                    stderr = devnull
+                                    )
                 print_arr("Модуль psutil - установлен.", color = "green")
                 print_arr("Теперь снова запустите этот скрипт!", color = "yellow")
                 exit()
