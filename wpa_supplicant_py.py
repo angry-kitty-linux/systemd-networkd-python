@@ -53,29 +53,29 @@ try:
             kill_internet(ppid_wpa)
 
         if ppid_wpa is None:
-            print_arr("Обнаружено соединение с использованием неизвестного ПО", color = "red")
-            print_arr("Пожалуйста, выключите сервисы, предостовляющие интернет соединение!", color = "red")
+            print_arr("Обнаружено соединение с использованием неизвестного ПО", color="red")
+            print_arr("Пожалуйста, выключите сервисы, предостовляющие интернет соединение!", color="red")
             exit()
 
     bool_path = os.path.exists(path_dhcp)
 
     if bool_path is True:
-        user_choice = input_y_n("Обнаружена существующая конфигурация, перезаписать? (y, n)", color = "yellow")
+        user_choice = input_y_n("Обнаружена существующая конфигурация, перезаписать? (y, n)", color="yellow")
 
         if user_choice == 1:
-            print_arr("Записываю конфиг...", color = "green")
+            print_arr("Записываю конфиг...", color="green")
             write_dhcp()
 
         if user_choice == 0:
-            print_arr("OK, оставляю на месте!", color = "green")
+            print_arr("OK, оставляю на месте!", color="green")
 
     if bool_path is False:
-        print_arr("Конфигурация не найдена, создаю новый конфиг...", color = "yellow")
+        print_arr("Конфигурация не найдена, создаю новый конфиг...", color="yellow")
         write_dhcp()
 
     #########################
     # Добавление в автозагрузку
-    print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color = "green")
+    print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color="green")
     subprocess.check_call(
                         ["systemctl", "enable", "--now", "systemd-networkd.service"],
                         stdout=devnull,
@@ -165,7 +165,7 @@ try:
 
         # Создание профиля
         if write_profile(ssid, password):
-            print_arr("Профиль был успешно создан!", color = "green")
+            print_arr("Профиль был успешно создан!", color="green")
             path = write_profile.__annotations__["path"]
             device = write_profile.__annotations__["device"]
 
