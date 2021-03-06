@@ -1,6 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+Этот модуль сделан для взаимодействия с профилями.
+Его функции создавать/изменять файлы и т.д
+"""
+
 import getpass
 from colors import print_arr
 from input_while import input_y_n
@@ -12,8 +17,6 @@ import subprocess
 import re
 import shutil
 import sys
-
-from writes import input_y_n
 
 from config import path_dhcp
 from config import path_wireless
@@ -27,8 +30,8 @@ def check_root():
     user = getpass.getuser()  # Узнаем пользователя
 
     if user != "root":
-        print_arr("Привет, ", user, color = "green")
-        print_arr("Для работоспособности программы Вам требуется root", color = "red")
+        print_arr("Привет, ", user, color="green")
+        print_arr("Для работоспособности программы Вам требуется root", color="red")
         exit()
 
 
@@ -45,17 +48,15 @@ def device():
         device = input_list(
                             "Обнаружено несколько модулей WI-FI, выберите нужный!",
                             device_list,   # Список с модулями
-                            color = "yellow"
+                            color="yellow"
                             )
-
-        device = device_list[device - 1]  # В функции отчет выполняется с 1,
-                                          # поэтому `- 1`
+        device = device_list[device - 1]
 
 
 @Check_error()
-def write_dhcp(print_output = True):  # Функция, для создания конфига в systemd-networkd
+def write_dhcp(print_output=True):  # Функция, для создания конфига в systemd-networkd
     if print_output is True:
-        print_arr("Удаляю конфигурацию...", color = "green")
+        print_arr("Удаляю конфигурацию...", color="green")
 
     with open(path_dhcp, 'w') as f:
         f.write("""
@@ -74,7 +75,7 @@ def check_pip() -> int:
     """
 
     try:
-        subprocess.check_call(["pip"], stdout = devnull, stderr = devnull)
+        subprocess.check_call(["pip"], stdout=devnull, stderr=devnull)
         return 1
     except FileNotFoundError:
         return 0
@@ -89,7 +90,6 @@ def distribution() -> str:
     with open("/etc/os-release") as f:
         r = f.read()
         distr = r[r.find('NAME="') + 6 :r.find("\n") - 1]
-
     return distr
 
 
@@ -119,21 +119,21 @@ def status_function():
         try:
             import psutil
         except ModuleNotFoundError:
-            print_arr("Psutil не найден в системе! Устанавливаю...", color = "red")
-            if check_connect(timeout=0, print_output = False):
+            print_arr("Psutil не найден в системе! Устанавливаю...", color="red")
+            if check_connect(timeout=0, print_output=False):
 
-                print_arr("Установочные файлы готовы к сборке!", color = "green")
-                print_arr("Идет сборка модуля...", color = "yellow")
+                print_arr("Установочные файлы готовы к сборке!", color="green")
+                print_arr("Идет сборка модуля...", color="yellow")
                 subprocess.check_call(
                                     ["bash", "install_psutil.sh"],
-                                    stdout = devnull,
-                                    stderr = devnull
+                                    stdout=devnull,
+                                    stderr=devnull
                                     )
-                print_arr("Модуль psutil - установлен.", color = "green")
-                print_arr("Теперь снова запустите этот скрипт!", color = "yellow")
+                print_arr("Модуль psutil - установлен.", color="green")
+                print_arr("Теперь снова запустите этот скрипт!", color="yellow")
                 exit()
             else:
-                print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color = "yellow")
+                print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color="yellow")
                 import psutil_loc as psutil
 
         device()
@@ -145,15 +145,10 @@ def status_function():
 
 
 @Check_error()
-def write_wireless(
-                    print_output = True,
-                    replace:bool = False):
-
-    replace:"Перезаписывать ли конфиг"
-
+def write_wireless(print_output:bool=True, replace:bool=False):
     if replace is True:
         if print_output is True:
-            print_arr("Удаляю конфиг...", color = "green")
+            print_arr("Удаляю конфиг...", color="green")
         os.remove(path_wireless)
 
     with open(path_wireless, "w") as f:
@@ -165,8 +160,8 @@ DHCP=ipv4
 """)
 
 
-#@Check_error()
-def write_profile(ssid:str, password:str, replace = False) -> bool:
+
+def write_profile(ssid:str, password:str, replace=False) -> bool:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
         with open(path, "w") as f:
@@ -179,9 +174,9 @@ update_config=1
 """)
         subprocess.check_call(
                             ["chmod", "733", path],
-                            stdout = devnull,
-                            stderr = devnull
-                            )     # Отбираем права на чтение
+                            stdout=devnull,
+                            stderr=devnull
+                            )      # Отбираем права на чтение
 
         write_profile.__annotations__["device"] = device
         write_profile.__annotations__["path"] = path
@@ -208,10 +203,7 @@ def check_service() -> int:
 
 @Check_error()
 def extra_kill() -> int:
-
-    """
-    Функции для просмотра /run/wpa_supplicant
-    """
+    """ Функции для просмотра/удаления /run/wpa_supplicant """
 
     if os.path.exists("/run/wpa_supplicant"):
         shutil.rmtree("/run/wpa_supplicant")
@@ -223,22 +215,25 @@ def extra_kill() -> int:
 
 @Check_error()
 def kill(id_proccess: int) -> int:
-    id_proccess: "Айди процесса, для убийства"
+    """ Завершение процесса """
 
     try:
-
         if check_service() == 1:
-            subprocess.check_call(["systemctl", "stop", "wpa_supplicant_python.service"],
-                                    stderr = devnull, stdout = devnull)
+            subprocess.check_call(
+                                ["systemctl", "stop", "wpa_supplicant_python.service"],
+                                stderr=devnull,
+                                stdout=devnull
+                                )
 
         process = psutil.Process(id_proccess)
         process.kill()
 
-        if check_connect(timeout = 1.5, print_output = False) == 1:
+        if check_connect(timeout=1.5, print_output=False) == 1:
             status_kill = extra_kill()
 
             if status_kill == 0:
-                print_arr("Не получилось отключится, прерывание!", color = "red")
+                print_arr("Не получилось отключится, прерывание!",
+                          color="red")
                 exit()
 
         return 1
@@ -248,7 +243,6 @@ def kill(id_proccess: int) -> int:
 
 @Check_error()
 def default_locale() -> int:
-
     """
     Функция для установки дефолтного шрифта
     """
@@ -267,7 +261,6 @@ def check_locale() -> int:
 
 @Check_error()
 def russian_locale() -> int:
-
     """
     Это функция для установки русской локали
     (Чтобы не было квадратиков в tty)
@@ -282,14 +275,14 @@ def russian_locale() -> int:
 
             with open("/etc/locale.gen", "w") as f:
                 file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
-                print(file_read, file = f)
+                print(file_read, file=f)
 
             subprocess.check_call(["locale-gen"])
 
         subprocess.check_call(["setfont", "latarcyrheb-sun16"], stderr=devnull)
 
         return 1
-    except (FileNotFoundError, subprocess.CalledProcessError) :
+    except (FileNotFoundError, subprocess.CalledProcessError):
         return 0
 
 

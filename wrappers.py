@@ -16,7 +16,7 @@ def KeyboardError():
                 return func(*args, **kwargs)
             except (KeyboardInterrupt, EOFError):
                 print()
-                print_arr("Остановлено!", color = "red")
+                print_arr("Остановлено!", color="red")
                 exit()
         return wrap2
     return wrap
@@ -27,10 +27,10 @@ def Check_error():
     def wrap(func):
         def wrap2(*args, **kwargs):
             try:
-                return_status =  func(*args, **kwargs)
-            except TypeError as e:
-                print_arr ("Произошла ошибка!", color = "red")
-                print_arr(e, color = "red")
+                return_status = func(*args, **kwargs)
+            except ZeroDivisionError as e:
+                print_arr ("Произошла ошибка!", color="red")
+                print_arr(e, color="red")
 
                 return 0
             else:

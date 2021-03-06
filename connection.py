@@ -1,6 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+Взаимодействие с соединением.
+Здесь будет происходить подключение,
+проверка соединение и т.д
+"""
+
 import os
 from colors import print_arr
 from daemon import write_daemon
@@ -18,29 +24,34 @@ from wrappers import Check_error
 
 
 @Check_error()
-def check_connect(timeout = 10, print_output = True) -> int:
+def check_connect(timeout: int = 10, print_output: bool = True) -> int:
+    """ Проверка соединения с интернетом """
 
-    timeout: "Задержка (wpa_supplicant не сразу включается)"
-    print_output: "Печатать вывод"
+    # timeout - "Задержка (wpa_supplicant не сразу включается)"
+    # print_output - "Печатать вывод"
 
     try:
         if print_output is True:
-            print_arr("Проверка соединения...", color = "yellow")
+            print_arr("Проверка соединения...", color="yellow")
 
         time.sleep(timeout)
 
-        subprocess.check_call(["ping", "-c 1", "eth0.me"], stdout=devnull, stderr = devnull)
+        subprocess.check_call(["ping", "-c 1", "eth0.me"],
+                              stdout=devnull,
+                              stderr=devnull
+                              )
         return 1
-
     except subprocess.CalledProcessError:
         return 0
 
 
 @Check_error()
-def connect(device:str, path:str, print_output = True) -> int:
-    device: "Модуль вафли"
-    path: "Путь до конфига"
-    print_output: "Печатать вывод"
+def connect(device: str, path: str, print_output: bool = True) -> int:
+    """ Используется для подключение к интернету """
+
+    # device "Модуль вафли"
+    # path "Путь до конфига"
+    # print_output "Печатать вывод"
 
     # Финальный шаг
     command = "wpa_supplicant -B -i {} -c {}".format(device, path)
@@ -49,43 +60,51 @@ def connect(device:str, path:str, print_output = True) -> int:
 
     if check_connect() == 1:
         if print_output is True:
-            print_arr("Подключено!", color = "green")
+            print_arr("Подключено!", color="green")
         return 1
 
     else:
         if print_output is True:
-            print_arr(output, color = "red")
-            print_arr("Не получилось подключится ): ", color = "red")
+            print_arr(output, color="red")
+            print_arr("Не получилось подключится ): ", color="red")
         return 0
 
 
 @Check_error()
-def kill_internet(ppid:int, print_output = True) -> int:
-    print_output: "Печать вывода"
-    ppid: "Номер процесса"
+def kill_internet(ppid: int, print_output: bool = True) -> int:
+    """ Отключение от интернета """
+
+    # print_output "Печать вывода"
+    # ppid "Номер процесса"
 
     if print_output is True:
-        status_user = input_while.input_y_n("Обнаружено соединение с использование wpa_supplicant, прервать? (y, n)", color = "yellow")
+        status_user = input_while.input_y_n("Обнаружено соединение с",
+                                            "использованием wpa_supplicant,"
+                                            " прервать? (y, n)",
+                                            color="yellow")
         if status_user == 1:
             subprocess.check_call(
                                 ["systemctl", "stop", "wpa_supplicant_python.service"],
-                                stdout = devnull,
-                                stderr = devnull
-                                )     # Пробуем остановить службу (если её нет, то ничего не произойдет)
+                                stdout=devnull,
+                                stderr=devnull
+                                )
+
+            # Пробуем остановить службу (если её нет, то ничего не произойдет)
             writes.kill(ppid)
-            print_arr("Соединение было разорвано!", color = "red")
+            print_arr("Соединение было разорвано!", color="red")
             return 1
 
         if status_user == 0:
             if print_output is True:
-                print_arr("Учтите, т.к wpa_supplicant запущен, могут возникнуть проблемы", color = "red")
+                print_arr("Учтите, т.к wpa_supplicant запущен,",
+                          "могут возникнуть проблемы", color="red")
             return 0
 
     if print_output is False:
         subprocess.check_call(
                             ["systemctl", "stop", "wpa_supplicant_python.service"],
-                            stdout = devnull,
-                            stderr = devnull
+                            stdout=devnull,
+                            stderr=devnull
                             )
         writes.kill(ppid)
         return 1
@@ -96,10 +115,11 @@ def watch_ssid() -> Union[int, List[str]]:
     """
     Функция для просмотра SSID
     """
+
     try:
         out = os.popen("wpa_cli scan").read().split("\n")
         if "OK" in out[1]:
-            print_arr("Идет поиск WI-FI сетей...", color = "yellow")
+            print_arr("Идет поиск WI-FI сетей...", color="yellow")
 
             time.sleep(2)
 
@@ -114,10 +134,17 @@ def watch_ssid() -> Union[int, List[str]]:
 
             del wifi_list_clean[-1]
 
-            print (print_arr("MAC", color = "pink", return_color = True).rjust(26), end = "")
-            print (print_arr("SIGNAL", color = "pink", return_color = True).rjust(22), end = "")
-            print (print_arr("SECURITY", color = "pink", return_color = True).center(23), end = "")
-            print (print_arr("SSID", color = "pink", return_color = True).center(34), end = "")
+            print (print_arr("MAC", color="pink",
+                             return_color=True).rjust(26),end="")
+
+            print (print_arr("SIGNAL", color="pink",
+                             return_color=True).rjust(22), end="")
+
+            print (print_arr("SECURITY", color="pink",
+                             return_color=True).center(23), end="")
+
+            print (print_arr("SSID", color="pink",
+                             return_color=True).center(34), end="")
             print()
 
             unpack = lambda *x: x
@@ -147,10 +174,10 @@ def watch_ssid() -> Union[int, List[str]]:
                         signal = int(signal[1:])
                         #######################################################
                         # MAC Адресс
-                        text = print_arr(mac, color = "yellow", arrow = False,
-                                         return_color = True).ljust(len(mac) + 10, "|")
+                        text = print_arr(mac, color="yellow", arrow=False,
+                                         return_color=True).ljust(len(mac) + 10, "|")
                         text = "{0}{2}\033[39m|\033[39m{1}".format(counter_text.center(6), text, "")
-                        print (text, end = "")
+                        print (text, end="")
                         #######################################################
 
                         # Уровень сигнала
@@ -165,8 +192,8 @@ def watch_ssid() -> Union[int, List[str]]:
 
                         text = print_arr(
                                         signal,
-                                        color = color,
-                                        return_color = True
+                                        color=color,
+                                        return_color=True
                                         ).ljust(12)
 
                         print (f"  {text} |", end = "")
@@ -183,23 +210,23 @@ def watch_ssid() -> Union[int, List[str]]:
                             text = "WPA/WPA2"
 
 
-                        text = print_arr(text, color = "red", return_color = True).ljust(12)
-                        print(f" {text} ".ljust(20, "|"), end = "")
+                        text = print_arr(text, color="red", return_color=True).ljust(12)
+                        print(f" {text} ".ljust(20, "|"), end="")
                         #######################################################
 
                         # SSID сетей
-                        text = print_arr(ssid, color = "blue", return_color = True).center(35)
+                        text = print_arr(ssid, color="blue", return_color=True).center(35)
                         if ssid == "":
-                            text = print_arr("<SSID не обнаружен!>", color = "red", return_color = True).center(35)
+                            text = print_arr("<SSID не обнаружен!>", color="red", return_color=True).center(35)
 
                         print (f"{text}".ljust(len(text) + 1, "|"))
             print()
             return ssids_wifi
 
         else:
-            print (out)
-            print_arr (out[1], color = "red")
-            print_arr("Не удалось просканировать сети!", color = "red")
+            print(out)
+            print_arr (out[1], color="red")
+            print_arr("Не удалось просканировать сети!", color="red")
 
     except Exception:
         return 0
@@ -210,9 +237,10 @@ def scan():
 
     subprocess.check_call(
                         ["wpa_cli", "scan"],
-                        stdout = devnull,
-                        stderr = devnull
+                        stdout=devnull,
+                        stderr=devnull
                         )
+
 
 def info_ssid():
     """ Получение информации о точках доступа """
