@@ -136,6 +136,7 @@ try:
 
         ssid = ssids[ssid - 1]
     """
+
     profiles_dir = os.listdir("/etc/wpa_supplicant")
 
     profile = None
@@ -185,6 +186,11 @@ try:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
 
+    subprocess.check_call(
+                        ["systemctl", "stop", "wpa_supplicant_python.service"],
+                        stdout=devnull,
+                        stderr=devnull
+    )
     status_connect = connect(device, path)
 
     if status_connect == 0:

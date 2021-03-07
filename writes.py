@@ -218,12 +218,11 @@ def kill(id_proccess: int) -> int:
     """ Завершение процесса """
 
     try:
-        if check_service() == 1:
-            subprocess.check_call(
-                                ["systemctl", "stop", "wpa_supplicant_python.service"],
-                                stderr=devnull,
-                                stdout=devnull
-                                )
+        subprocess.check_call(
+                            ["systemctl", "stop", "wpa_supplicant_python.service"])
+                            #stderr=devnull,
+                            #stdout=devnull
+                            #)
 
         process = psutil.Process(id_proccess)
         process.kill()
@@ -237,7 +236,8 @@ def kill(id_proccess: int) -> int:
                 exit()
 
         return 1
-    except:
+    except Exception as e:
+        print_arr (e, color="red")
         return 0
 
 
