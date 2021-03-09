@@ -121,7 +121,6 @@ def status_function():
         except ModuleNotFoundError:
             print_arr("Psutil не найден в системе! Устанавливаю...", color="red")
             if check_connect(timeout=0, print_output=False):
-
                 print_arr("Установочные файлы готовы к сборке!", color="green")
                 print_arr("Идет сборка модуля...", color="yellow")
                 subprocess.check_call(

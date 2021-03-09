@@ -160,9 +160,9 @@ try:
 
         # Ввод ssid
         print_arr("Введите SSID (название точки доступа)", color="green")
-        ssid_user = input("> ")
+        ssid = input("> ")
         # Ввод пароля
-        password = password(ssid_user)
+        password = password(ssid)
 
         # Создание профиля
         if write_profile(ssid, password):
@@ -185,7 +185,6 @@ try:
     if check_status == 1:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
-
     subprocess.check_call(
                         ["systemctl", "stop", "wpa_supplicant_python.service"],
                         stdout=devnull,
