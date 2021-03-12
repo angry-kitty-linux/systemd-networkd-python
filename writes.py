@@ -143,10 +143,10 @@ def status_function():
                 "Собираю из локальных файлов", color="yellow")
 
         subprocess.check_call(
-                        ["bash", "psutil_scripts/install_local.sh"])
-                        #stdout=devnull,
-                        #stderr=devnull
-        #)
+                        ["bash", "psutil_scripts/install_local.sh"],
+                        stdout=devnull,
+                        stderr=devnull
+        )
 
         print_arr("Модуль psutil - установлен.", color="green")
         print_arr("Теперь снова запустите этот скрипт!", color="yellow")
@@ -154,7 +154,7 @@ def status_function():
 
 
 @Check_error()
-def write_wireless(print_output:bool=True, replace:bool=False):
+def write_wireless(print_output: bool=True, replace: bool=False):
     if replace is True:
         if print_output is True:
             print_arr("Удаляю конфиг...", color="green")

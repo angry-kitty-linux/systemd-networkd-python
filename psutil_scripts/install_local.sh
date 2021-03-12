@@ -1,4 +1,4 @@
-cd psutil_scripts/psutil_loc
+cd psutil_scripts
 ls
 make install
 
