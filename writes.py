@@ -136,17 +136,17 @@ def status_function():
             else:
                 raise AssertionError
 
-    except Exception as e:
+    except (Exception, AssertionError) as e:
         print_arr(e, color = "red")
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
         print_arr("Отсутсвует соединение с интернетом. ",
                 "Собираю из локальных файлов", color="yellow")
 
         subprocess.check_call(
-                        ["bash", "psutil_scripts/install_local.sh"],
-                        stdout=devnull,
-                        stderr=devnull
-        )
+                        ["bash", "psutil_scripts/install_local.sh"])
+                        #stdout=devnull,
+                        #stderr=devnull
+        #)
 
         print_arr("Модуль psutil - установлен.", color="green")
         print_arr("Теперь снова запустите этот скрипт!", color="yellow")
@@ -228,10 +228,10 @@ def kill(id_proccess: int) -> int:
 
     try:
         subprocess.check_call(
-                            ["systemctl", "stop", "wpa_supplicant_python.service"])
-                            #stderr=devnull,
-                            #stdout=devnull
-                            #)
+                            ["systemctl", "stop", "wpa_supplicant_python.service"],
+                            stderr=devnull,
+                            stdout=devnull
+                            )
 
         process = psutil.Process(id_proccess)
         process.kill()
