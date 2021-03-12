@@ -152,6 +152,7 @@ def status_function():
         print_arr("Теперь снова запустите этот скрипт!", color="yellow")
         exit()
 
+    device()
 
 @Check_error()
 def write_wireless(print_output: bool=True, replace: bool=False):
