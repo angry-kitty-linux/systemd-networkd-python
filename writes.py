@@ -119,28 +119,38 @@ def status_function():
         try:
             import psutil
         except ModuleNotFoundError:
-            print_arr("Psutil не найден в системе! Устанавливаю...", color="red")
+            print_arr("Psutil не найден в системе! Устанавливаю...",
+                      color="red")
             if check_connect(timeout=0, print_output=False):
                 print_arr("Установочные файлы готовы к сборке!", color="green")
                 print_arr("Идет сборка модуля...", color="yellow")
                 subprocess.check_call(
-                                    ["bash", "install_psutil.sh"],
+                                    ["bash", "psutil_scripts/install_psutil.sh"],
                                     stdout=devnull,
                                     stderr=devnull
                                     )
                 print_arr("Модуль psutil - установлен.", color="green")
                 print_arr("Теперь снова запустите этот скрипт!", color="yellow")
                 exit()
-            else:
-                print_arr("Отсутсвует соединение с интернетом. Использую локальную версию...", color="yellow")
-                import psutil_loc as psutil
 
-        device()
+            else:
+                raise AssertionError
 
     except Exception as e:
         print_arr(e, color = "red")
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
-        import psutil_loc as psutil
+        print_arr("Отсутсвует соединение с интернетом. ",
+                "Собираю из локальных файлов", color="yellow")
+
+        subprocess.check_call(
+                        ["bash", "psutil_scripts/install_local.sh"],
+                        stdout=devnull,
+                        stderr=devnull
+        )
+
+        print_arr("Модуль psutil - установлен.", color="green")
+        print_arr("Теперь снова запустите этот скрипт!", color="yellow")
+        exit()
 
 
 @Check_error()
