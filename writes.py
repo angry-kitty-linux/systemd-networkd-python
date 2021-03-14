@@ -303,11 +303,15 @@ def russian_locale() -> int:
 @Check_error()
 def module_profile():
     """ Для создания профиля модуля """
-    config_info = "ctrl_interface=/run/wpa_supplicant GROUP=wheel"
-    "\nupdate_config=1"
+
+    config_info = """
+ctrl_interface=/run/wpa_supplicant
+update_config=1"""
 
     try:
-        open(path_module, "r").close()
+        with open(path_module, "r") as f:
+            if f.read() != config_info:
+                raise FileNotFoundError
     except FileNotFoundError:
         with open(path_module, "w") as f:
             print(config_info, file=f)
