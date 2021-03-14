@@ -59,7 +59,7 @@ def input_list(text_quest: str, text: List[str], color: str, print_output: bool 
 
 
 @KeyboardError()
-def password(ssid:str) -> str:
+def password_user(ssid: str) -> str:
     """ Функция для ввода пароля """
     print_arr(f"Введите пароль от {ssid}", color="green")
 

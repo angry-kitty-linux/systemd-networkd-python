@@ -20,9 +20,12 @@ import sys
 
 from config import path_dhcp
 from config import path_wireless
+from config import path_module
+
 from config import devnull
 
 from wrappers import Check_error
+from wrappers import KeyboardError
 
 
 @Check_error()
@@ -295,4 +298,17 @@ def russian_locale() -> int:
     except (FileNotFoundError, subprocess.CalledProcessError):
         return 0
 
+
+@KeyboardError()
+@Check_error()
+def module_profile():
+    """ Для создания профиля модуля """
+    config_info = "ctrl_interface=/run/wpa_supplicant GROUP=wheel"
+    "\nupdate_config=1"
+
+    try:
+        open(path_module, "r").close()
+    except FileNotFoundError:
+        with open(path_module, "w") as f:
+            print(config_info, file=f)
 

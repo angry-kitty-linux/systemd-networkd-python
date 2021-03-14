@@ -78,7 +78,7 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
     # ppid "Номер процесса"
 
     if print_output is True:
-        status_user = input_while.input_y_n("Обнаружено соединение с",
+        status_user = input_while.input_y_n("Обнаружено соединение с ",
                                             "использованием wpa_supplicant,"
                                             " прервать? (y, n)",
                                             color="yellow")
