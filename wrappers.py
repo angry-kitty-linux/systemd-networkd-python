@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from colors import print_arr
+import writes
 
 """
 Тут я буду по возможности создавать декораторы для разных целей

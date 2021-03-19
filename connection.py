@@ -16,6 +16,7 @@ from typing import Union
 from typing import List
 import writes
 import input_while
+
 from config import path_dhcp
 from config import path_wireless
 from config import devnull
@@ -53,6 +54,7 @@ def connect(device: str, path: str, print_output: bool = True) -> int:
     # path "Путь до конфига"
     # print_output "Печатать вывод"
 
+    writes.extra_kill()
     # Финальный шаг
     command = "wpa_supplicant -B -i {} -c {}".format(device, path)
     output = os.popen(command).read()

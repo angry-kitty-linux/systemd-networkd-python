@@ -135,9 +135,11 @@ try:
             profiles = [line[:line.rfind("-")] for line in profiles_supl]
             profiles.append("Добавить профиль")
 
-            profile = input_list("Найдено больше одного профиля, "
-                                 "какой желаете запустить?",
-                        profiles, color="yellow")
+            profile = input_list(
+                                "Найдено больше одного профиля, "
+                                "какой желаете запустить?",
+                                profiles,
+                                color="yellow")
 
             if len(profiles) != profile:
                 name_wifi = profiles_supl[profile - 1]
@@ -155,21 +157,21 @@ try:
             # Ввод пароля
             password = password_user(ssid)
 
-    # Создание профиля
-    if write_profile(ssid, password):
-        print_arr("Профиль был успешно создан!", color="green")
-        path = write_profile.__annotations__["path"]
-        device = write_profile.__annotations__["device"]
+            # Создание профиля
+            if write_profile(ssid, password):
+                print_arr("Профиль был успешно создан!", color="green")
+                path = write_profile.__annotations__["path"]
+                device = write_profile.__annotations__["device"]
 
-    else:  # В случае, если профиль выбран
-        user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
-        if user_choice_input == 1:
-            write_profile(ssid, password, replace=True)
-            print_arr("Перезаписано!", color="green")
-            device = write_profile.__annotations__["device"]
-            path = write_profile.__annotations__["path"]
-        #
-        #################################################################
+            else:  # В случае, если профиль выбран
+                user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
+                if user_choice_input == 1:
+                    write_profile(ssid, password, replace=True)
+                    print_arr("Перезаписано!", color="green")
+                    device = write_profile.__annotations__["device"]
+                    path = write_profile.__annotations__["path"]
+                #
+                #################################################################
 
 
     check_status = check_connect(timeout=0, print_output=False)

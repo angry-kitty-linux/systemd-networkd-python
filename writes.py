@@ -157,6 +157,7 @@ def status_function():
 
     device()
 
+
 @Check_error()
 def write_wireless(print_output: bool=True, replace: bool=False):
     if replace is True:
@@ -181,7 +182,7 @@ def write_profile(ssid:str, password:str, replace=False) -> bool:
             ssid, password = (str(ssid), str(password))
             output = os.popen(f"wpa_passphrase {ssid} {password}").read()
             f.write(f"""
-ctrl_interface=/run/wpa_supplicant GROUP=wheel
+ctrl_interface=/run/wpa_supplicant
 update_config=1
 {output}
 """)
@@ -220,7 +221,6 @@ def extra_kill() -> int:
 
     if os.path.exists("/run/wpa_supplicant"):
         shutil.rmtree("/run/wpa_supplicant")
-        os.remove("/run/wpa_supplicant")
         return 1
     else:
         return 0
@@ -316,3 +316,8 @@ update_config=1"""
         with open(path_module, "w") as f:
             print(config_info, file=f)
 
+    subprocess.check_call(
+                        ["systemctl", "restart", "wpa_supplicant"],
+                        stdout=devnull,
+                        stderr=devnull
+    )
