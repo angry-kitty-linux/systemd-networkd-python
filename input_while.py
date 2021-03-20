@@ -74,20 +74,3 @@ def password_user(ssid: str) -> str:
             return user_choice
 
 
-@KeyboardError()
-def ssid() -> str:
-    """ Функция для ввода ssid """
-
-    print_arr("Идёт получение доступных WI-FI....", color="green")
-    ssids = connection.info_ssid()
-
-    print_arr("Теперь введите SSID (название точки доступа)", color="green")
-
-    while True:
-        user_choice = input("> ")
-
-        if user_choice not in ssids:
-            print_arr(f"{user_choice} не существует!", color="red")
-
-        else:
-            return user_choice

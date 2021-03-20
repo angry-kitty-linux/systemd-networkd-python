@@ -8,11 +8,14 @@
 
 import getpass
 from colors import print_arr
+
 from input_while import input_y_n
 from input_while import input_list
+from input_while import password_user
+
 import os
 from connection import check_connect
-from typing import Union
+from typing import Union, List
 import subprocess
 import re
 import shutil
@@ -321,3 +324,14 @@ update_config=1"""
                         stdout=devnull,
                         stderr=devnull
     )
+
+
+def password_and_ssid() -> List[str, str]:
+    """ Функция для ввода SSID & Пароля """
+
+    # Ввод ssid
+    print_arr("Введите SSID (название точки доступа)", color="green")
+    ssid = input("> ")
+    # Ввод пароля
+    password = password_user(ssid)
+    return ssid, password
