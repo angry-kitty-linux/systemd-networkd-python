@@ -56,7 +56,7 @@ def device():
                             device_list,   # Список с модулями
                             color="yellow"
                             )
-        device = device_list[device - 1]
+    return device
 
 
 @Check_error()
@@ -113,13 +113,12 @@ def check_distutils() -> int:
 
 
 @Check_error()
-def status_function():
-    global psutil
-
+def status_function() -> str:
     """
     Функция для того, чтобы сообщить всем остальным
     использовать локальную версию
     """
+    global psutil
 
     try:
         try:
@@ -158,8 +157,7 @@ def status_function():
         print_arr("Теперь снова запустите этот скрипт!", color="yellow")
         exit()
 
-    device()
-
+    return device()
 
 @Check_error()
 def write_wireless(print_output: bool=True, replace: bool=False):
@@ -220,12 +218,16 @@ def check_service() -> int:
 
 @Check_error()
 def extra_kill() -> int:
-    """ Функции для просмотра/удаления /run/wpa_supplicant """
+    """ Функции для выключения wpa_supl """
 
-    if os.path.exists("/run/wpa_supplicant"):
-        shutil.rmtree("/run/wpa_supplicant")
+    try:
+        subprocess.check_call(["wpa_cli", "disconnect"],
+                              stdout=devnull,
+                              stderr=devnull
+        )
+
         return 1
-    else:
+    except Exception:
         return 0
 
 
@@ -234,12 +236,6 @@ def kill(id_proccess: int) -> int:
     """ Завершение процесса """
 
     try:
-        subprocess.check_call(
-                            ["systemctl", "stop", "wpa_supplicant_python.service"],
-                            stderr=devnull,
-                            stdout=devnull
-                            )
-
         process = psutil.Process(id_proccess)
         process.kill()
 
@@ -335,3 +331,19 @@ def password_and_ssid() -> List[str, str]:
     # Ввод пароля
     password = password_user(ssid)
     return ssid, password
+
+
+def profiles_mkdir() -> List[str]:
+    """ Поиск профилей в /etc/wpa_supplicant """
+
+    profiles = os.listdir("/etc/wpa_supplicant")
+    profiles_mk = []
+    for line in profiles:
+        begin_ind = line.find("-") + 1  # Начальный индекс
+        end_ind = line.rfind("-")  # Конечный индекс
+        if end_ind == -1: continue
+
+        index = slice(begin_ind, end_ind)
+        profiles_mk.append(line[index])
+
+    return profiles_mk

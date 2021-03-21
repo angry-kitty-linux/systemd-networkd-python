@@ -1,28 +1,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+""" Основной файл """
+
+
 import os
 import subprocess
-
 from colors import print_arr
 
 from writes import write_dhcp, write_wireless, write_profile
 from writes import status_function
 from writes import check_root
-from writes import kill
 from writes import ppid
-from writes import russian_locale, default_locale
+from writes import russian_locale
 from writes import module_profile
 from writes import password_and_ssid
+from writes import profiles_mkdir
 
 from connection import connect
 from connection import check_connect
 from connection import kill_internet
 from connection import watch_ssid
-from connection import info_ssid
 
 from daemon import write_daemon
-from daemon import auto_wpa
 
 from input_while import input_y_n
 from input_while import input_list
@@ -32,18 +32,15 @@ from config import path_dhcp
 from config import path_wireless
 from config import devnull
 
-import re
 
 try:
 
     russian_locale()
     check_root()
-    status_function()
-
+    device_user = status_function()
     # -----------------------
 
     module_profile()
-
     bool_path = os.path.exists(path_dhcp)
 
     if bool_path is True:
@@ -110,8 +107,7 @@ try:
     #################################################################
     # ALPHA версия
 
-    profiles = [re.findall(r"-(\w+)-", line)
-                for line in os.listdir("/etc/wpa_supplicant")][0]
+    profiles = profiles_mkdir()
     profiles.append("Добавить профиль")
     profile = None
 
@@ -148,11 +144,8 @@ try:
                                 "какой желаете запустить?",
                                 profiles,
                                 color="yellow")
-
             if len(profiles) != profile:
-                name_wifi = profiles[profile - 1]
-                device = name_wifi[name_wifi.rfind("-") + 1:]
-                name_wifi = "wpa_supplicant-{}.conf".format(name_wifi)
+                name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
 
     if (len(profiles) == 0
@@ -185,19 +178,21 @@ try:
     if check_status == 1:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
+
     subprocess.check_call(
                         ["systemctl", "stop", "wpa_supplicant_python.service"],
                         stdout=devnull,
                         stderr=devnull
     )
-    status_connect = connect(device, path)
+
+    status_connect = connect(device_user, path)
 
     if status_connect == 0:
-        print_arr("device - ", device, color="yellow")
+        print_arr("device - ", device_user, color="yellow")
         print_arr("path - ", path, color="yellow")
 
     if status_connect == 1:
-        status_daemon = write_daemon(device=device, path=path)
+        status_daemon = write_daemon(device=device_user, path=path)
 
 except (KeyboardInterrupt, EOFError):
     print()

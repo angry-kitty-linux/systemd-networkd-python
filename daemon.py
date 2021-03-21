@@ -7,6 +7,7 @@ from colors import print_arr
 import subprocess
 
 from config import devnull
+from config import path_daemon
 
 from wrappers import Check_error
 
@@ -14,7 +15,7 @@ import input_while
 
 
 @Check_error()
-def auto_wpa(print_output: bool = True) -> int:
+def auto_wpa(print_output: bool=True) -> int:
     """ Добавляем наш демон в автозагрузку """
 
     # print_output "Вывод"
@@ -35,7 +36,7 @@ def auto_wpa(print_output: bool = True) -> int:
 
 
 @Check_error()
-def write_daemon(device:str, path:str) -> int:
+def write_daemon(device: str, path: str) -> int:
     """ Создаём демона """
 
     # device "Модуль вайли"
@@ -43,7 +44,7 @@ def write_daemon(device:str, path:str) -> int:
 
     daemon = f"""
 [Unit]
-Description = wpa_supplicant_python запущен!
+Description = network connection
 After = network.target
 [Service]
 ExecStart = /usr/bin/wpa_supplicant -B -i {device} -c {path}
@@ -51,8 +52,6 @@ RemainAfterExit=true
 [Install]
 WantedBy = multi-user.target
 """
-
-    path_daemon = "/etc/systemd/system/wpa_supplicant_python.service"
 
     if os.path.exists(path_daemon):
         user_choice = input_while.input_y_n("Обнаружен существующий демон.",

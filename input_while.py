@@ -27,11 +27,12 @@ def input_y_n(*text: str, color: str):
 
 @KeyboardError()
 def input_list(text_quest: str, text: List[str], color: str, print_output: bool = True) -> int:
+    """ Менюшка с вариантами ответов """
 
     # text_quest "Вопрос"
     # text "Варианты ответов"
 
-    assert type(text) is list
+    assert isinstance(text, list)
 
     print_arr(text_quest, color=color)
 
@@ -48,11 +49,12 @@ def input_list(text_quest: str, text: List[str], color: str, print_output: bool 
         try:
             user_choice = input("> ").lower()
 
-            if len(user_choice) > 3 or int(user_choice) <= 0 or int(user_choice) > ind:
-                raise ValueError
+            if (len(user_choice) > 3
+                or int(user_choice) <= 0
+                or int(user_choice) > ind):  raise ValueError
 
             else:
-                return int(user_choice)
+                return text[int(user_choice) - 1]
 
         except ValueError:
             print_arr(f"{user_choice} не существует!", color="red")
@@ -61,6 +63,7 @@ def input_list(text_quest: str, text: List[str], color: str, print_output: bool 
 @KeyboardError()
 def password_user(ssid: str) -> str:
     """ Функция для ввода пароля """
+
     print_arr(f"Введите пароль от {ssid}", color="green")
 
     while True:
