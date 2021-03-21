@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from colors import print_arr
-import writes
+from _colors import print_arr
+import _writes
 
 """
 Тут я буду по возможности создавать декораторы для разных целей
@@ -17,7 +17,7 @@ def KeyboardError():
                 return func(*args, **kwargs)
             except (KeyboardInterrupt, EOFError):
                 print()
-                writes.extra_kill()
+                _writes.extra_kill()
                 print_arr("Остановлено!", color="red")
                 exit()
         return wrap2

@@ -1,11 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-from colors import print_arr
-from wrappers import KeyboardError
+from _colors import print_arr
+from _wrappers import KeyboardError
 from typing import List
-import connection
+import _connection
 
 
 @KeyboardError()

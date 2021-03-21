@@ -7,27 +7,27 @@
 """
 
 import getpass
-from colors import print_arr
+from _colors import print_arr
 
-from input_while import input_y_n
-from input_while import input_list
-from input_while import password_user
+from _input_while import input_y_n
+from _input_while import input_list
+from _input_while import password_user
 
 import os
-from connection import check_connect
+from _connection import check_connect
 from typing import Union, List
 import subprocess
 import re
 import sys
 
-from config import path_dhcp
-from config import path_wireless
-from config import path_module
+from _config import path_dhcp
+from _config import path_wireless
+from _config import path_module
 
-from config import devnull
+from _config import devnull
 
-from wrappers import Check_error
-from wrappers import KeyboardError
+from _wrappers import Check_error
+from _wrappers import KeyboardError
 
 
 @Check_error()
@@ -305,17 +305,17 @@ def russian_locale() -> int:
 def module_profile():
     """ Для создания профиля модуля """
 
-    config_info = """
+    _config_info = """
 ctrl_interface=/run/wpa_supplicant
 update_config=1"""
 
     try:
         with open(path_module, "r") as f:
-            if f.read() != config_info:
+            if f.read() != _config_info:
                 raise FileNotFoundError
     except FileNotFoundError:
         with open(path_module, "w") as f:
-            print(config_info, file=f)
+            print(_config_info, file=f)
 
     subprocess.check_call(
                         ["systemctl", "restart", "wpa_supplicant"],

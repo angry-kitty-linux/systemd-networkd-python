@@ -8,20 +8,20 @@
 """
 
 import os
-from colors import print_arr
-from daemon import write_daemon
+from _colors import print_arr
+from _daemon import write_daemon
 import subprocess
 import time
 from typing import Union
 from typing import List
-import writes
-import input_while
+import _writes
+import _input_while
 
-from config import path_dhcp
-from config import path_wireless
-from config import devnull
+from _config import path_dhcp
+from _config import path_wireless
+from _config import devnull
 
-from wrappers import Check_error
+from _wrappers import Check_error
 
 
 @Check_error()
@@ -54,7 +54,7 @@ def connect(device: str, path: str, print_output: bool = True) -> int:
     # path "Путь до конфига"
     # print_output "Печатать вывод"
 
-    writes.extra_kill()
+    _writes.extra_kill()
     # Финальный шаг
     command = "wpa_supplicant -B -i {} -c {}".format(device, path)
     output = os.popen(command).read()
@@ -80,7 +80,7 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
     # ppid "Номер процесса"
 
     if print_output is True:
-        status_user = input_while.input_y_n("Обнаружено соединение с ",
+        status_user = _input_while.input_y_n("Обнаружено соединение с ",
                                             "использованием wpa_supplicant,"
                                             " прервать? (y, n)",
                                             color="yellow")
@@ -92,7 +92,7 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
                                 )
 
             # Пробуем остановить службу (если её нет, то ничего не произойдет)
-            writes.kill(ppid)
+            _writes.kill(ppid)
             print_arr("Соединение было разорвано!", color="red")
             return 1
 
@@ -108,7 +108,7 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
                             stdout=devnull,
                             stderr=devnull
                             )
-        writes.kill(ppid)
+        _writes.kill(ppid)
         return 1
 
 

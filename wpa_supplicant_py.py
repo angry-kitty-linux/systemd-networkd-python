@@ -6,32 +6,32 @@
 
 import os
 import subprocess
-from colors import print_arr
+from _colors import print_arr
 
-from writes import write_dhcp, write_wireless, write_profile
-from writes import status_function
-from writes import check_root
-from writes import ppid
-from writes import russian_locale
-from writes import module_profile
-from writes import password_and_ssid
-from writes import profiles_mkdir
-from writes import view_password
+from _writes import write_dhcp, write_wireless, write_profile
+from _writes import status_function
+from _writes import check_root
+from _writes import ppid
+from _writes import russian_locale
+from _writes import module_profile
+from _writes import password_and_ssid
+from _writes import profiles_mkdir
+from _writes import view_password
 
-from connection import connect
-from connection import check_connect
-from connection import kill_internet
-from connection import watch_ssid
+from _connection import connect
+from _connection import check_connect
+from _connection import kill_internet
+from _connection import watch_ssid
 
-from daemon import write_daemon
+from _daemon import write_daemon
 
-from input_while import input_y_n
-from input_while import input_list
-from input_while import password_user
+from _input_while import input_y_n
+from _input_while import input_list
+from _input_while import password_user
 
-from config import path_dhcp
-from config import path_wireless
-from config import devnull
+from _config import path_dhcp
+from _config import path_wireless
+from _config import devnull
 
 
 try:
