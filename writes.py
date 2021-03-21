@@ -18,7 +18,6 @@ from connection import check_connect
 from typing import Union, List
 import subprocess
 import re
-import shutil
 import sys
 
 from config import path_dhcp
@@ -159,6 +158,7 @@ def status_function() -> str:
 
     return device()
 
+
 @Check_error()
 def write_wireless(print_output: bool=True, replace: bool=False):
     if replace is True:
@@ -225,6 +225,8 @@ def extra_kill() -> int:
                               stdout=devnull,
                               stderr=devnull
         )
+
+        os.remove("/run/wpa_supplicant/{}".format(device))
 
         return 1
     except Exception:
@@ -347,3 +349,16 @@ def profiles_mkdir() -> List[str]:
         profiles_mk.append(line[index])
 
     return profiles_mk
+
+
+def view_password(path: str) -> str:
+    """ Просмотр пароля в профиле """
+
+    with open(path, "r") as file:
+        for line in file:
+            if "#psk" in line:
+                password = line[7:-2]
+
+    return password
+
+

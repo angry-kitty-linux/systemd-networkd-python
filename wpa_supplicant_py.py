@@ -16,6 +16,7 @@ from writes import russian_locale
 from writes import module_profile
 from writes import password_and_ssid
 from writes import profiles_mkdir
+from writes import view_password
 
 from connection import connect
 from connection import check_connect
@@ -128,7 +129,6 @@ try:
                             color="yellow",
                             print_output=False)
 
-            ssid = ssids[ssid - 1]
             password = password_user(ssid)
 
         except AssertionError:    # В случае, если SSID не удалось просканировать
@@ -144,6 +144,10 @@ try:
                                 "какой желаете запустить?",
                                 profiles,
                                 color="yellow")
+
+            ssid = profile
+            password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
+                                     "{}.conf".format(profile, device_user))
             if len(profiles) != profile:
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
@@ -158,20 +162,20 @@ try:
         ssid, password = password_and_ssid()
 
         # Создание профиля
-        if write_profile(ssid, password):
-            print_arr("Профиль был успешно создан!", color="green")
-            path = write_profile.__annotations__["path"]
-            device = write_profile.__annotations__["device"]
+    if write_profile(ssid, password):
+        print_arr("Профиль был успешно создан!", color="green")
+        path = write_profile.__annotations__["path"]
+        device = write_profile.__annotations__["device"]
 
-        else:  # В случае, если профиль выбран
-            user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
-            if user_choice_input == 1:
-                write_profile(ssid, password, replace=True)
-                print_arr("Перезаписано!", color="green")
-                device = write_profile.__annotations__["device"]
-                path = write_profile.__annotations__["path"]
-            #
-            #################################################################
+    else:  # В случае, если профиль выбран
+        user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
+        if user_choice_input == 1:
+            write_profile(ssid, password, replace=True)
+            print_arr("Перезаписано!", color="green")
+            device = write_profile.__annotations__["device"]
+            path = write_profile.__annotations__["path"]
+        #
+        #################################################################
 
 
     check_status = check_connect(timeout=0, print_output=False)
