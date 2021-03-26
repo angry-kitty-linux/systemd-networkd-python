@@ -324,7 +324,7 @@ update_config=1"""
     )
 
 
-def password_and_ssid() -> List[str, str]:
+def password_and_ssid() -> List[str]:
     """ Функция для ввода SSID & Пароля """
 
     # Ввод ssid
