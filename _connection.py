@@ -85,11 +85,13 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
                                             " прервать? (y, n)",
                                             color="yellow")
         if status_user == 1:
-            subprocess.check_call(
-                                ["systemctl", "stop", "wpa_supplicant_python.service"],
-                                stdout=devnull,
-                                stderr=devnull
-                                )
+            try:
+                subprocess.check_call(
+                                    ["systemctl", "stop", "wpa_supplicant_python.service"],
+                                    stdout=devnull,
+                                    stderr=devnull
+                                    )
+            except CalledProcessError: pass
 
             # Пробуем остановить службу (если её нет, то ничего не произойдет)
             _writes.kill(ppid)
@@ -103,11 +105,14 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
             return 0
 
     if print_output is False:
-        subprocess.check_call(
-                            ["systemctl", "stop", "wpa_supplicant_python.service"],
-                            stdout=devnull,
-                            stderr=devnull
-                            )
+        try:
+            subprocess.check_call(
+                                ["systemctl", "stop", "wpa_supplicant_python.service"],
+                                stdout=devnull,
+                                stderr=devnull
+                                )
+        except CalledProcessError: pass
+
         _writes.kill(ppid)
         return 1
 

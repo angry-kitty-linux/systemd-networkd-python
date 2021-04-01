@@ -145,15 +145,17 @@ try:
                                 profiles,
                                 color="yellow")
 
-            ssid = profile
-            password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
-                                     "{}.conf".format(profile, device_user))
+
             if len(profiles) != profile:
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
+            else:
+                ssid = profile
+                password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
+                                         "{}.conf".format(profile, device_user))
 
     if (len(profiles) == 0
-        or len(profiles) == profile
+        or profile == "Добавить профиль" 
         or assert_error is True):
 
         # Или в случае, если выбран 'добавить профиль':
@@ -182,12 +184,14 @@ try:
     if check_status == 1:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
-
-    subprocess.check_call(
-                        ["systemctl", "stop", "wpa_supplicant_python.service"],
-                        stdout=devnull,
-                        stderr=devnull
-    )
+    
+    try:
+        subprocess.check_call(
+                            ["systemctl", "stop", "wpa_supplicant_python.service"],
+                            stdout=devnull,
+                            stderr=devnull
+        )
+    except subprocess.CalledProcessError: pass
 
     status_connect = connect(device_user, path)
 

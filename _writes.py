@@ -126,13 +126,14 @@ def status_function() -> str:
             print_arr("Psutil не найден в системе! Устанавливаю...",
                       color="red")
             if check_connect(timeout=0, print_output=False):
-                print_arr("Установочные файлы готовы к сборке!", color="green")
-                print_arr("Идет сборка модуля...", color="yellow")
-                subprocess.check_call(
-                                    ["bash", "psutil_scripts/install_psutil.sh"],
-                                    stdout=devnull,
-                                    stderr=devnull
-                                    )
+                if check_pip() == 1:
+                    subprocess.check_call(["pip3", "install", "-r",
+                                            "requirements.txt", "-t", "."],
+                                          stdout=devnull,
+                                          stderr=devnull
+                    
+                    )
+                
                 print_arr("Модуль psutil - установлен.", color="green")
                 print_arr("Теперь снова запустите этот скрипт!", color="yellow")
                 exit()
@@ -143,15 +144,8 @@ def status_function() -> str:
     except (Exception, AssertionError) as e:
         print_arr(e, color = "red")
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
-        print_arr("Отсутсвует соединение с интернетом. ",
-                "Собираю из локальных файлов", color="yellow")
-
-        subprocess.check_call(
-                        ["bash", "psutil_scripts/install_local.sh"],
-                        stdout=devnull,
-                        stderr=devnull
-        )
-
+        
+        import common.psutil
         print_arr("Модуль psutil - установлен.", color="green")
         print_arr("Теперь снова запустите этот скрипт!", color="yellow")
         exit()
@@ -324,7 +318,7 @@ update_config=1"""
     )
 
 
-def password_and_ssid() -> List[str, str]:
+def password_and_ssid() -> List[str]:
     """ Функция для ввода SSID & Пароля """
 
     # Ввод ssid
