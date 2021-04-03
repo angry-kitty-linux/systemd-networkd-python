@@ -130,7 +130,6 @@ try:
                             print_output=False)
 
             password = password_user(ssid)
-
         except AssertionError:    # В случае, если SSID не удалось просканировать
             assert_error = True
 
@@ -163,7 +162,8 @@ try:
         ssid, password = password_and_ssid()
 
         # Создание профиля
-    if write_profile(ssid, password):
+    status_write = write_profile(ssid, password)
+    if status_write is True:
         print_arr("Профиль был успешно создан!", color="green")
         path = write_profile.__annotations__["path"]
         device = write_profile.__annotations__["device"]
@@ -171,10 +171,14 @@ try:
     else:  # В случае, если профиль выбран
         user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
         if user_choice_input == 1:
+            password = password_user(ssid)
             write_profile(ssid, password, replace=True)
             print_arr("Перезаписано!", color="green")
             device = write_profile.__annotations__["device"]
             path = write_profile.__annotations__["path"]
+        
+        if user_choice_input == 0:
+           path = status_write
         #
         #################################################################
 

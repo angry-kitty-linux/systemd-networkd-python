@@ -145,13 +145,7 @@ def status_function() -> str:
         print_arr(e, color = "red")
         path = sys.path[-1]
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
-        """
-        subprocess.check_call(
-                            ["cp", "-r", "common/psutil", path],
-                            stdout=devnull,
-                            stderr=devnull
-                            )
-        """
+
         import psutil_loc as psutil
         print_arr("Модуль psutil - установлен.", color="green")
     return device()
@@ -174,7 +168,7 @@ DHCP=ipv4
 
 
 
-def write_profile(ssid:str, password:str, replace=False) -> bool:
+def write_profile(ssid:str, password:str, replace=False) -> Union[bool, str]:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
         with open(path, "w") as f:
@@ -195,7 +189,9 @@ update_config=1
         write_profile.__annotations__["path"] = path
 
         return True
-
+    
+    if os.path.exists(path):
+        return path
 
 @Check_error()
 def ppid() -> int:
