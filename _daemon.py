@@ -52,11 +52,15 @@ RemainAfterExit=true
 [Install]
 WantedBy = multi-user.target
 """
-
+    
     if os.path.exists(path_daemon):
+        with open(path_daemon) as f:
+            if f.read() == daemon: exit()
+
         user_choice = _input_while.input_y_n("Обнаружен существующий демон.",
                                             " Перезаписать? (y, n)",
                                             color="yellow")
+
         if user_choice == 1:
             os.remove(path_daemon)
             with open(path_daemon, "w") as f:
