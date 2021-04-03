@@ -149,7 +149,6 @@ try:
             if len(profiles) != profile:
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
-            else:
                 ssid = profile
                 password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
                                          "{}.conf".format(profile, device_user))
