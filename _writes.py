@@ -143,13 +143,17 @@ def status_function() -> str:
 
     except (Exception, AssertionError) as e:
         print_arr(e, color = "red")
+        path = sys.path[-1]
         print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
-        
-        import common.psutil
+        """
+        subprocess.check_call(
+                            ["cp", "-r", "common/psutil", path],
+                            stdout=devnull,
+                            stderr=devnull
+                            )
+        """
+        import psutil_loc as psutil
         print_arr("Модуль psutil - установлен.", color="green")
-        print_arr("Теперь снова запустите этот скрипт!", color="yellow")
-        exit()
-
     return device()
 
 
