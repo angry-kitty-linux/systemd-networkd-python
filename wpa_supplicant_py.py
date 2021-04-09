@@ -145,7 +145,7 @@ try:
                                 color="yellow")
 
 
-            if len(profiles) != profile:
+            if profile != "Добавить профиль": 
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
                 ssid = profile
