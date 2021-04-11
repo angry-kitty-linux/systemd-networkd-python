@@ -31,5 +31,5 @@ Systemd-networkd-python
 | Arch Linux                 |       ✅       |
 | Ubuntu                     |       ✅       |
 | Linux Mint                 |       ✅       |
-| Debian                     |       🤔       |
+| Debian                     |       ✅       |
 | Gentoo                     |       ❌       |
