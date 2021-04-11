@@ -322,5 +322,4 @@ def password_and_ssid() -> Tuple[str]:
 
     password = password_user(ssid)
     os.remove(path)
-    print ("remove")
     return ssid, password
