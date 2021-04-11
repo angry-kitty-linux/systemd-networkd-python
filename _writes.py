@@ -11,6 +11,7 @@ import subprocess
 import sys
 import getpass
 import os
+import psutil
 
 from _colors import print_arr
 
@@ -74,19 +75,6 @@ DHCP=yes
 
 
 @Check_error()
-def check_pip() -> int:
-    """
-    Думаю из названия функции все ясно)
-    """
-
-    try:
-        subprocess.check_call(["pip"], stdout=devnull, stderr=devnull)
-        return 1
-    except FileNotFoundError:
-        return 0
-
-
-@Check_error()
 def distribution() -> str:
     """
     Определение дистрибутива
@@ -96,59 +84,6 @@ def distribution() -> str:
         r = f.read()
         distr = r[r.find('NAME="') + 6 :r.find("\n") - 1]
     return distr
-
-
-@Check_error()
-def check_distutils() -> int:
-    """
-    Для определения модуля distutils (нужен для установки pip)
-    """
-    try:
-        import distutils
-        return 1
-
-    except ModuleNotFoundError:
-        return 0
-
-
-@Check_error()
-def status_function() -> str:
-    """
-    Функция для того, чтобы сообщить всем остальным
-    использовать локальную версию
-    """
-    global psutil
-
-    try:
-        try:
-            import psutil
-        except ModuleNotFoundError:
-            print_arr("Psutil не найден в системе! Устанавливаю...",
-                      color="red")
-            if check_connect(timeout=0, print_output=False):
-                if check_pip() == 1:
-                    subprocess.check_call(["pip3", "install", "-r",
-                                            "requirements.txt", "-t", "."],
-                                          stdout=devnull,
-                                          stderr=devnull
-                    
-                    )
-                
-                print_arr("Модуль psutil - установлен.", color="green")
-                print_arr("Теперь снова запустите этот скрипт!", color="yellow")
-                exit()
-
-            else:
-                raise AssertionError
-
-    except (Exception, AssertionError) as e:
-        print_arr(e, color = "red")
-        path = sys.path[-1]
-        print_arr("Произошла ошибка! Использую локальную версию!", color = "yellow")
-
-        import psutil_loc as psutil
-        print_arr("Модуль psutil - установлен.", color="green")
-    return device()
 
 
 @Check_error()

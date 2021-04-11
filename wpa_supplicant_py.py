@@ -8,10 +8,11 @@ import os
 import subprocess
 from collections import Counter
 
+import __init__
 from _colors import print_arr
 
 from _writes import write_dhcp, write_wireless, write_profile
-from _writes import status_function
+from _writes import device 
 from _writes import check_root
 from _writes import ppid
 from _writes import russian_locale
@@ -37,10 +38,9 @@ from _config import devnull
 
 
 try:
-
     russian_locale()
     check_root()
-    device_user = status_function()
+    device_user = device() 
     # -----------------------
 
     module_profile()
