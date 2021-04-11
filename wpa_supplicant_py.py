@@ -20,6 +20,7 @@ from _writes import module_profile
 from _writes import password_and_ssid
 from _writes import profiles_mkdir
 from _writes import view_password
+from _writes import correct_Profile
 
 from _connection import connect
 from _connection import check_connect
@@ -158,7 +159,8 @@ try:
                                                                device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
                 ssid = profile
-                password = view_password(profile)
+                path = correct_Profile(profile)
+                password = view_password(path)
 
     if (len(profiles) == 0 or
             profile == "Добавить профиль" or

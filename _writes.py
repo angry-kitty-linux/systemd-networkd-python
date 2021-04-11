@@ -276,10 +276,9 @@ def profiles_mkdir() -> List[str]:
 
     return profiles_mk
 
-
-def view_password(profile: str) -> Union[str, None]:
-    """ Просмотр пароля в профиле """
-
+def correct_Profile(profile: str) -> str:
+    """ Для определения нужного профиля с одним SSID и с разными модулями """
+    
     files = os.listdir(path_Wpa)
     count_True = sum([True for file in files if profile in file])
     profiles = [file[15:-5] for file in files if profile in file]
@@ -288,19 +287,21 @@ def view_password(profile: str) -> Union[str, None]:
        user_Choice = input_list("Обнаружен профиль с разными модулями WI-FI"
                                 ", выберите нужный",
                                 profiles,
-                                color="yellow") 
+                                color="yellow")   
     if count_True == 1:
         user_Choice = profiles[0]
 
     path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
+    return path
+
+
+def view_password(path: str) -> Union[str, None]:
+    """ Просмотр пароля в профиле """
 
     with open(path, "r") as file:
         for line in file:
             if "#psk" in line:
                 password = line[7:-2]
-    if count_True is None:
-        password = None
-
     return password
 
 
@@ -314,7 +315,12 @@ def password_and_ssid() -> Tuple[str]:
     if ssid in profiles_mkdir():
         user_Choice = input_y_n("Профиль существует, перезаписать? (y, n) ",
                                 color="yellow") 
+        path = correct_Profile(ssid)
         if user_Choice == 0:
-            password = view_password 
+            password = view_password(path) 
+            return ssid, password
+
     password = password_user(ssid)
+    os.remove(path)
+    print ("remove")
     return ssid, password
