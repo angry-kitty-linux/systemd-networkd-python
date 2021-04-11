@@ -260,6 +260,8 @@ update_config=1"""
     )
 
 
+@Check_error()
+@KeyboardError()
 def profiles_mkdir() -> List[str]:
     """ Поиск профилей в /etc/wpa_supplicant """
 
@@ -276,6 +278,9 @@ def profiles_mkdir() -> List[str]:
 
     return profiles_mk
 
+
+@Check_error()
+@KeyboardError()
 def correct_Profile(profile: str) -> str:
     """ Для определения нужного профиля с одним SSID и с разными модулями """
     
@@ -295,6 +300,8 @@ def correct_Profile(profile: str) -> str:
     return path
 
 
+@Check_error()
+@KeyboardError()
 def view_password(path: str) -> Union[str, None]:
     """ Просмотр пароля в профиле """
 
@@ -305,6 +312,8 @@ def view_password(path: str) -> Union[str, None]:
     return password
 
 
+@Check_error()
+@KeyboardError()
 def password_and_ssid() -> Tuple[str]:
     """ Функция для ввода SSID & Пароля """
 

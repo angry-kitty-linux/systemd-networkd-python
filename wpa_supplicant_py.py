@@ -211,3 +211,4 @@ try:
 except (KeyboardInterrupt, EOFError):
     print()
     print_arr("Остановлено!", color="red")
+    raise SystemExit(1)

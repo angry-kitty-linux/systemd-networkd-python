@@ -8,7 +8,6 @@
 
 
 from _colors import print_arr
-import _writes
 
 
 def KeyboardError():
@@ -21,7 +20,7 @@ def KeyboardError():
             except (KeyboardInterrupt, EOFError):
                 print()
                 print_arr("Остановлено!", color="red")
-                SystemExit(0)
+                raise SystemExit(1)
         return wrap2
     return wrap
 
