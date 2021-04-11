@@ -8,7 +8,6 @@
 
 from typing import Union, List, Tuple
 import subprocess
-import sys
 import getpass
 import os
 import psutil
@@ -33,16 +32,21 @@ from _wrappers import KeyboardError
 
 @Check_error()
 def check_root():
+    """ Проверка рута """
+
     user = getpass.getuser()  # Узнаем пользователя
 
     if user != "root":
         print_arr("Привет, ", user, color="green")
-        print_arr("Для работоспособности программы Вам требуется root", color="red")
-        exit()
+        print_arr("Для работоспособности программы"
+                  "Вам требуется root", color="red")
+        SystemExit(0)
 
 
 @Check_error()
 def device():
+    """ Определение вафли """
+
     global device
 
     devices = [line for line in psutil.net_if_stats()]
@@ -51,21 +55,22 @@ def device():
     if len(device_list) == 1:
         device = device_list[0]
     else:
-        device = input_list(
-                            "Обнаружено несколько модулей WI-FI, выберите нужный!",
+        device = input_list("Обнаружено несколько модулей WI-FI, "
+                            "выберите нужный!",
                             device_list,   # Список с модулями
-                            color="yellow"
-                            )
+                            color="yellow")
     return device
 
 
 @Check_error()
-def write_dhcp(print_output=True):  # Функция, для создания конфига в systemd-networkd
+def write_dhcp(print_output=True):
+    """ Запись dhcp профиля """
+
     if print_output is True:
         print_arr("Удаляю конфигурацию...", color="green")
 
-    with open(path_dhcp, 'w') as f:
-        f.write("""
+    with open(path_dhcp, 'w') as file:
+        file.write("""
 [Match]
 Name=en*
 
@@ -80,21 +85,22 @@ def distribution() -> str:
     Определение дистрибутива
     """
 
-    with open("/etc/os-release") as f:
-        r = f.read()
-        distr = r[r.find('NAME="') + 6 :r.find("\n") - 1]
+    with open("/etc/os-release") as file:
+        read = file.read()
+        distr = read[read.find('NAME="') + 6:read.find("\n") - 1]
     return distr
 
 
 @Check_error()
-def write_wireless(print_output: bool=True, replace: bool=False):
+def write_wireless(print_output: bool = True, replace: bool = False):
+    """ Создания профиля """
+
     if replace is True:
         if print_output is True:
             print_arr("Удаляю конфиг...", color="green")
         os.remove(path_wireless)
-
-    with open(path_wireless, "w") as f:
-        f.write(f"""
+    with open(path_wireless, "w") as file:
+        file.write(f"""
 [Match]
 Name={device}
 [Network]
@@ -103,13 +109,13 @@ DHCP=ipv4
 
 
 
-def write_profile(ssid:str, password:str, replace=False) -> Union[bool, str]:
+def write_profile(ssid: str, password: str, replace=False) -> Union[bool, str]:
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
-        with open(path, "w") as f:
+        with open(path, "w") as file:
             ssid, password = (str(ssid), str(password))
             output = os.popen(f"wpa_passphrase {ssid} {password}").read()
-            f.write(f"""
+            file.write(f"""
 ctrl_interface=/run/wpa_supplicant
 update_config=1
 {output}
@@ -124,15 +130,15 @@ update_config=1
         write_profile.__annotations__["path"] = path
 
         return True
-    
     if os.path.exists(path):
         return path
+
 
 @Check_error()
 def ppid() -> int:
     for proc in psutil.pids():
         proc = psutil.Process(proc)
-        if 'wpa_supplicant' == str(proc.name()):
+        if str(proc.name()) == 'wpa_supplicant':
             return proc.pid
 
 
@@ -152,8 +158,7 @@ def extra_kill() -> int:
     try:
         subprocess.check_call(["wpa_cli", "disconnect"],
                               stdout=devnull,
-                              stderr=devnull
-        )
+                              stderr=devnull)
 
         os.remove("/run/wpa_supplicant/{}".format(device))
 
@@ -176,11 +181,11 @@ def kill(id_proccess: int) -> int:
             if status_kill == 0:
                 print_arr("Не получилось отключится, прерывание!",
                           color="red")
-                exit()
+                SystemExit(1)
 
         return 1
     except Exception as e:
-        print_arr (e, color="red")
+        print_arr(e, color="red")
         return 0
 
 
@@ -195,11 +200,12 @@ def default_locale() -> int:
 
 @Check_error()
 def check_locale() -> int:
-    with open("/etc/locale.gen", "r") as f:
-        if "#ru_RU.UTF-8 UTF-8" in f.read():
+    """ Проверка наличия русской локали """
+
+    with open("/etc/locale.gen", "r") as file:
+        if "#ru_RU.UTF-8 UTF-8" in file.read():
             return 1
-        else:
-            return 0
+        return 0
 
 
 @Check_error()
@@ -211,14 +217,15 @@ def russian_locale() -> int:
 
     try:
         if check_locale() == 1:
-            with open("/etc/locale.gen", "r") as f:
-                file_read = f.read()
+            with open("/etc/locale.gen", "r") as file:
+                file_read = file.read()
 
             open("/etc/locale.gen", "w").close()
 
-            with open("/etc/locale.gen", "w") as f:
-                file_read = file_read.replace("#ru_RU.UTF-8 UTF-8", "ru_RU.UTF-8 UTF-8")
-                print(file_read, file=f)
+            with open("/etc/locale.gen", "w") as file:
+                file_read = file_read.replace("#ru_RU.UTF-8 UTF-8",
+                                              "ru_RU.UTF-8 UTF-8")
+                print(file_read, file=file)
 
             subprocess.check_call(["locale-gen"])
 
@@ -239,12 +246,12 @@ ctrl_interface=/run/wpa_supplicant
 update_config=1"""
 
     try:
-        with open(path_module, "r") as f:
-            if f.read() != _config_info:
+        with open(path_module, "r") as file:
+            if file.read() != _config_info:
                 raise FileNotFoundError
     except FileNotFoundError:
-        with open(path_module, "w") as f:
-            print(_config_info, file=f)
+        with open(path_module, "w") as file:
+            print(_config_info, file=file)
 
     subprocess.check_call(
                         ["systemctl", "restart", "wpa_supplicant"],
@@ -261,7 +268,8 @@ def profiles_mkdir() -> List[str]:
     for line in profiles:
         begin_ind = line.find("-") + 1  # Начальный индекс
         end_ind = line.rfind("-")  # Конечный индекс
-        if end_ind == -1: continue
+        if end_ind == -1:
+            continue
 
         index = slice(begin_ind, end_ind)
         profiles_mk.append(line[index])
@@ -271,12 +279,10 @@ def profiles_mkdir() -> List[str]:
 
 def view_password(profile: str) -> Union[str, None]:
     """ Просмотр пароля в профиле """
-    
+
     files = os.listdir(path_Wpa)
-    
     count_True = sum([True for file in files if profile in file])
     profiles = [file[15:-5] for file in files if profile in file]
-    
     # Для определения кол-ва найденных профидей (во избежание путаницы)
     if count_True != 1:
        user_Choice = input_list("Обнаружен профиль с разными модулями WI-FI"
@@ -292,7 +298,6 @@ def view_password(profile: str) -> Union[str, None]:
         for line in file:
             if "#psk" in line:
                 password = line[7:-2]
-    
     if count_True is None:
         password = None
 
@@ -310,11 +315,6 @@ def password_and_ssid() -> Tuple[str]:
         user_Choice = input_y_n("Профиль существует, перезаписать? (y, n) ",
                                 color="yellow") 
         if user_Choice == 0:
-           password = view_password 
-
+            password = view_password 
     password = password_user(ssid)
     return ssid, password
-
-
-
-

@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from _colors import print_arr
-import _writes
 
 """
 Тут я буду по возможности создавать декораторы для разных целей
 """
+
+
+from _colors import print_arr
+import _writes
+
 
 def KeyboardError():
     """ Обработка CTRL + C """
@@ -18,7 +21,7 @@ def KeyboardError():
             except (KeyboardInterrupt, EOFError):
                 print()
                 print_arr("Остановлено!", color="red")
-                exit()
+                SystemExit(0)
         return wrap2
     return wrap
 
@@ -29,14 +32,15 @@ def Check_error():
         def wrap2(*args, **kwargs):
             try:
                 return_status = func(*args, **kwargs)
-            except ZeroDivisionError as e:
-                print_arr ("Произошла ошибка!", color="red")
+            except Exception as e:
+                print_arr("Произошла ошибка!", color="red")
                 print_arr(e, color="red")
 
                 return 0
             else:
-                if return_status is None: return 1
-                if return_status is not None: return return_status
+                if return_status is None:
+                    return 1
+                if return_status is not None:
+                    return return_status
         return wrap2
     return wrap
-

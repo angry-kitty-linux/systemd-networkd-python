@@ -7,13 +7,15 @@
 проверка соединение и т.д
 """
 
-import os
-from _colors import print_arr
-from _daemon import write_daemon
+
 import subprocess
 import time
 from typing import Union
 from typing import List
+import os
+
+from _colors import print_arr
+from _daemon import write_daemon
 import _writes
 import _input_while
 
@@ -81,17 +83,12 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
 
     if print_output is True:
         status_user = _input_while.input_y_n("Обнаружено соединение с ",
-                                            "использованием wpa_supplicant,"
-                                            " прервать? (y, n)",
-                                            color="yellow")
+                                             "использованием wpa_supplicant,"
+                                             " прервать? (y, n)",
+                                             color="yellow")
         if status_user == 1:
-            try:
-                subprocess.check_call(
-                                    ["systemctl", "stop", "wpa_supplicant_python.service"],
-                                    stdout=devnull,
-                                    stderr=devnull
-                                    )
-            except CalledProcessError: pass
+            subprocess.check_output(["systemctl", "stop",
+                                    "wpa_supplicant_python.service"])
 
             # Пробуем остановить службу (если её нет, то ничего не произойдет)
             _writes.kill(ppid)
@@ -105,13 +102,8 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
             return 0
 
     if print_output is False:
-        try:
-            subprocess.check_call(
-                                ["systemctl", "stop", "wpa_supplicant_python.service"],
-                                stdout=devnull,
-                                stderr=devnull
-                                )
-        except CalledProcessError: pass
+        subprocess.check_call(["systemctl", "stop",
+                              "wpa_supplicant_python.service"])
 
         _writes.kill(ppid)
         return 1
@@ -133,25 +125,27 @@ def watch_ssid() -> Union[int, List[str]]:
             wifi_list = os.popen("wpa_cli scan_results").read()
             wifi_list = wifi_list.split("\n")
             wifi_list_dirty = wifi_list[2:]
-            wifi_list_dirty = [[line.replace('\t', " ")] for line in wifi_list_dirty]
+            wifi_list_dirty = [[line.replace('\t', " ")]
+                               for line in wifi_list_dirty]
 
             wifi_list_clean = []
             for line in wifi_list_dirty:
-                wifi_list_clean.append([element.split(" ") for element in line])
+                wifi_list_clean.append([element.split(" ")
+                                       for element in line])
 
             del wifi_list_clean[-1]
 
-            print (print_arr("MAC", color="pink",
-                             return_color=True).rjust(26),end="")
+            print(print_arr("MAC", color="pink",
+                            return_color=True).rjust(26), end="")
 
-            print (print_arr("SIGNAL", color="pink",
-                             return_color=True).rjust(22), end="")
+            print(print_arr("SIGNAL", color="pink",
+                            return_color=True).rjust(22), end="")
 
-            print (print_arr("SECURITY", color="pink",
-                             return_color=True).center(23), end="")
+            print(print_arr("SECURITY", color="pink",
+                            return_color=True).center(23), end="")
 
-            print (print_arr("SSID", color="pink",
-                             return_color=True).center(34), end="")
+            print(print_arr("SSID", color="pink",
+                            return_color=True).center(34), end="")
             print()
 
             unpack = lambda *x: x
@@ -182,19 +176,25 @@ def watch_ssid() -> Union[int, List[str]]:
                         #######################################################
                         # MAC Адресс
                         text = print_arr(mac, color="yellow", arrow=False,
-                                         return_color=True).ljust(len(mac) + 10, "|")
-                        text = "{0}{2}\033[39m|\033[39m{1}".format(counter_text.center(6), text, "")
-                        print (text, end="")
+                                         return_color=True
+                                         ).ljust(len(mac) + 10, "|")
+                        text = "{0}{2}\033[39m|\033[39m{1}"
+                        "".format(counter_text.center(6), text, "")
+                        print(text, end="")
                         #######################################################
 
                         # Уровень сигнала
 
                         ##########
                         # Покраска текста
-                        if signal < 65: color = "green"
-                        elif signal < 75: color = "yellow"
-                        elif signal < 85: color = "red"
-                        else: color = "red"
+                        if signal < 65:
+                            color = "green"
+                        elif signal < 75:
+                            color = "yellow"
+                        elif signal < 85:
+                            color = "red"
+                        else:
+                            color = "red"
                         ##########
 
                         text = print_arr(
@@ -203,36 +203,43 @@ def watch_ssid() -> Union[int, List[str]]:
                                         return_color=True
                                         ).ljust(12)
 
-                        print (f"  {text} |", end = "")
+                        print(f"  {text} |", end="")
                         #######################################################
 
                         # Безопасность
 
                         if security == "[ESS]":
                             text = "None".center(8)
-                        elif "[WPA-PSK-CCMP+TKIP]" in security or "[WPA2-PSK-CCMP+TKIP]" in security:
+                        elif ("[WPA-PSK-CCMP+TKIP]" in security 
+                              or "[WPA2-PSK-CCMP+TKIP]" in security):
                             text = "WPA/WPA2"
 
-                        elif "[WPA-PSK-CCMP]" in security or "[WPA2-PSK-CCMP]"in security:
+                        elif ("[WPA-PSK-CCMP]" in security
+                              or "[WPA2-PSK-CCMP]" in security):
                             text = "WPA/WPA2"
 
-
-                        text = print_arr(text, color="red", return_color=True).ljust(12)
+                        text = print_arr(text,
+                                         color="red", 
+                                         return_color=True).ljust(12)
                         print(f" {text} ".ljust(20, "|"), end="")
                         #######################################################
 
                         # SSID сетей
-                        text = print_arr(ssid, color="blue", return_color=True).center(35)
+                        text = print_arr(ssid,
+                                         color="blue",
+                                         return_color=True).center(35)
                         if ssid == "":
-                            text = print_arr("<SSID не обнаружен!>", color="red", return_color=True).center(35)
+                            text = print_arr("<SSID не обнаружен!>",
+                                             color="red",
+                                             return_color=True).center(35)
 
-                        print (f"{text}".ljust(len(text) + 1, "|"))
+                        print(f"{text}".ljust(len(text) + 1, "|"))
             print()
             return ssids_wifi
 
         else:
             print(out)
-            print_arr (out[1], color="red")
+            print_arr(out[1], color="red")
             print_arr("Не удалось просканировать сети!", color="red")
 
     except Exception:
@@ -266,7 +273,8 @@ def info_ssid():
         wifi_list = os.popen("wpa_cli scan_results").read()
         wifi_list = wifi_list.split("\n")
         wifi_list_dirty = wifi_list[2:]
-        wifi_list_dirty = [[line.replace('\t', " ")] for line in wifi_list_dirty]
+        wifi_list_dirty = [[line.replace('\t', " ")]
+                           for line in wifi_list_dirty]
 
     wifi_list_clean = []
 

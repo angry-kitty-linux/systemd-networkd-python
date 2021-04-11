@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-
 """
 Это файл, в котором хранятся все пути, для сохранения профилей.
 И не только
 """
+
+
+import os
+
 
 devnull = open(os.devnull, "wb")
 

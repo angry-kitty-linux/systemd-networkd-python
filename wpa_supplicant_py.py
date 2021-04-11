@@ -69,25 +69,22 @@ try:
             "Запускаю/добавляю в автозагрузку systemd-networkd...",
             color="green")
 
-    subprocess.check_call(
-                        ["systemctl", "enable", "--now", "systemd-networkd.service"],
-                        stdout=devnull,
-                        stderr=devnull
-                        )
+    subprocess.check_call(["systemctl", "enable", "--now",
+                          "systemd-networkd.service"],
+                          stdout=devnull,
+                          stderr=devnull)
+
     # Создание ссылки
-    subprocess.check_call(  
-                            ["ln", "-snf", "/run/systemd/resolve/resolv.conf",
-                            "/etc/resolv.conf"],
-                            stdout=devnull,
-                            stderr=devnull
-                        )
+    subprocess.check_call(["ln", "-snf", "/run/systemd/resolve/resolv.conf",
+                          "/etc/resolv.conf"],
+                          stdout=devnull,
+                          stderr=devnull)
 
     # Запуск systemd-resolved / автозагрузка
-    subprocess.check_call(
-                          ["systemctl", "enable", "--now", "systemd-resolved.service"],
+    subprocess.check_call(["systemctl", "enable", "--now",
+                          "systemd-resolved.service"],
                           stdout=devnull,
-                          stderr=devnull
-                         )
+                          stderr=devnull)
     #########################
 
     # Проверка на существование ..../25-wireless.network
@@ -120,7 +117,6 @@ try:
     profiles = list(set([line if c[line] == 1 else line + f" ({c[line]}x*)"
                         for line in profiles]))
     profiles.append("Добавить профиль")
-    
     profile = None
 
     user_choice = input_y_n(
@@ -181,32 +177,25 @@ try:
         device = write_profile.__annotations__["device"]
 
     else:  # В случае, если профиль выбран
-        user_choice_input = input_y_n("Профиль существует, перезаписать? (y, n)", color="yellow")
+        user_choice_input = input_y_n("Профиль существует, перезаписать?"
+                                      " (y, n)", color="yellow")
         if user_choice_input == 1:
             password = password_user(ssid)
             write_profile(ssid, password, replace=True)
             print_arr("Перезаписано!", color="green")
             device = write_profile.__annotations__["device"]
             path = write_profile.__annotations__["path"]
-        
         if user_choice_input == 0:
            path = status_write
         #
         #################################################################
-
-
     check_status = check_connect(timeout=0, print_output=False)
     if check_status == 1:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
-    
-    try:
-        subprocess.check_call(
-                            ["systemctl", "stop", "wpa_supplicant_python.service"],
-                            stdout=devnull,
-                            stderr=devnull
-        )
-    except subprocess.CalledProcessError: pass
+
+    subprocess.check_output(["systemctl", "stop",
+                            "wpa_supplicant_python.service"])
 
     status_connect = connect(device_user, path)
 
