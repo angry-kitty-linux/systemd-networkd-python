@@ -17,7 +17,6 @@ def KeyboardError():
                 return func(*args, **kwargs)
             except (KeyboardInterrupt, EOFError):
                 print()
-                _writes.extra_kill()
                 print_arr("Остановлено!", color="red")
                 exit()
         return wrap2

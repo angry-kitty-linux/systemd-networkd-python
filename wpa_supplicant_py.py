@@ -6,6 +6,8 @@
 
 import os
 import subprocess
+from collections import Counter
+
 from _colors import print_arr
 
 from _writes import write_dhcp, write_wireless, write_profile
@@ -114,7 +116,11 @@ try:
     # ALPHA версия
 
     profiles = profiles_mkdir()
+    c = Counter(profiles)
+    profiles = list(set([line if c[line] == 1 else line + f" ({c[line]}x*)"
+                        for line in profiles]))
     profiles.append("Добавить профиль")
+    
     profile = None
 
     user_choice = input_y_n(
@@ -122,7 +128,8 @@ try:
                             " (Может не работать)",
                             color="green"
                             )
-
+    
+    assert_error = False
     if user_choice == 1:
         ssids = watch_ssid()
 
@@ -147,15 +154,15 @@ try:
                                 "какой желаете запустить?",
                                 profiles,
                                 color="yellow")
-
+            if profile.endswith('x*)'):
+                profile = profile[:-6] 
 
             if profile != "Добавить профиль": 
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile,
                                                                device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
                 ssid = profile
-                password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
-                                         "{}.conf".format(profile, device_user))
+                password = view_password(profile)
 
     if (len(profiles) == 0 or
             profile == "Добавить профиль" or

@@ -6,24 +6,24 @@
 Его функции создавать/изменять файлы и т.д
 """
 
+from typing import Union, List, Tuple
+import subprocess
+import sys
 import getpass
+import os
+
 from _colors import print_arr
 
 from _input_while import input_y_n
 from _input_while import input_list
 from _input_while import password_user
 
-import os
 from _connection import check_connect
-from typing import Union, List
-import subprocess
-import re
-import sys
 
 from _config import path_dhcp
 from _config import path_wireless
 from _config import path_module
-
+from _config import path_Wpa
 from _config import devnull
 
 from _wrappers import Check_error
@@ -318,17 +318,6 @@ update_config=1"""
     )
 
 
-def password_and_ssid() -> List[str]:
-    """ Функция для ввода SSID & Пароля """
-
-    # Ввод ssid
-    print_arr("Введите SSID (название точки доступа)", color="green")
-    ssid = input("> ")
-    # Ввод пароля
-    password = password_user(ssid)
-    return ssid, password
-
-
 def profiles_mkdir() -> List[str]:
     """ Поиск профилей в /etc/wpa_supplicant """
 
@@ -345,14 +334,52 @@ def profiles_mkdir() -> List[str]:
     return profiles_mk
 
 
-def view_password(path: str) -> str:
+def view_password(profile: str) -> Union[str, None]:
     """ Просмотр пароля в профиле """
+    
+    files = os.listdir(path_Wpa)
+    
+    count_True = sum([True for file in files if profile in file])
+    profiles = [file[15:-5] for file in files if profile in file]
+    
+    # Для определения кол-ва найденных профидей (во избежание путаницы)
+    if count_True != 1:
+       user_Choice = input_list("Обнаружен профиль с разными модулями WI-FI"
+                                ", выберите нужный",
+                                profiles,
+                                color="yellow") 
+    if count_True == 1:
+        user_Choice = profiles[0]
+
+    path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
 
     with open(path, "r") as file:
         for line in file:
             if "#psk" in line:
                 password = line[7:-2]
+    
+    if count_True is None:
+        password = None
 
     return password
+
+
+def password_and_ssid() -> Tuple[str]:
+    """ Функция для ввода SSID & Пароля """
+
+    # Ввод ssid
+    print_arr("Введите SSID (название точки доступа)", color="green")
+    ssid = input("> ")
+    # Ввод пароля
+    if ssid in profiles_mkdir():
+        user_Choice = input_y_n("Профиль существует, перезаписать? (y, n) ",
+                                color="yellow") 
+        if user_Choice == 0:
+           password = view_password 
+
+    password = password_user(ssid)
+    return ssid, password
+
+
 
 
