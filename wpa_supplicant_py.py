@@ -45,7 +45,8 @@ try:
     bool_path = os.path.exists(path_dhcp)
 
     if bool_path is True:
-        user_choice = input_y_n("Обнаружена существующая конфигурация, перезаписать? (y, n)", color="yellow")
+        user_choice = input_y_n("Обнаружена существующая конфигурация, "
+                                "перезаписать? (y, n)", color="yellow")
 
         if user_choice == 1:
             print_arr("Записываю конфиг...", color="green")
@@ -55,23 +56,29 @@ try:
             print_arr("OK, оставляю на месте!", color="green")
 
     if bool_path is False:
-        print_arr("Конфигурация не найдена, создаю новый конфиг...", color="yellow")
+        print_arr(
+                "Конфигурация не найдена, создаю новый конфиг...",
+                color="yellow")
         write_dhcp()
 
     #########################
     # Добавление в автозагрузку
-    print_arr("Запускаю/добавляю в автозагрузку systemd-networkd...", color="green")
+    print_arr(
+            "Запускаю/добавляю в автозагрузку systemd-networkd...",
+            color="green")
+
     subprocess.check_call(
                         ["systemctl", "enable", "--now", "systemd-networkd.service"],
                         stdout=devnull,
                         stderr=devnull
                         )
     # Создание ссылки
-    subprocess.check_call(
-                          ["ln", "-snf", "/run/systemd/resolve/resolv.conf", "/etc/resolv.conf"],
-                          stdout=devnull,
-                          stderr=devnull
-                         )
+    subprocess.check_call(  
+                            ["ln", "-snf", "/run/systemd/resolve/resolv.conf",
+                            "/etc/resolv.conf"],
+                            stdout=devnull,
+                            stderr=devnull
+                        )
 
     # Запуск systemd-resolved / автозагрузка
     subprocess.check_call(
@@ -103,8 +110,6 @@ try:
                         stdout=devnull,
                         stderr=devnull
                         )
-    #####
-
     #################################################################
     # ALPHA версия
 
@@ -118,7 +123,6 @@ try:
                             color="green"
                             )
 
-    assert_error = False
     if user_choice == 1:
         ssids = watch_ssid()
 
@@ -130,7 +134,7 @@ try:
                             print_output=False)
 
             password = password_user(ssid)
-        except AssertionError:    # В случае, если SSID не удалось просканировать
+        except AssertionError:  # В случае, если SSID не удалось просканировать
             assert_error = True
 
         else:
@@ -146,15 +150,16 @@ try:
 
 
             if profile != "Добавить профиль": 
-                name_wifi = "wpa_supplicant-{}-{}.conf".format(profile, device_user)
+                name_wifi = "wpa_supplicant-{}-{}.conf".format(profile,
+                                                               device_user)
                 path = f"/etc/wpa_supplicant/{name_wifi}"
                 ssid = profile
                 password = view_password("/etc/wpa_supplicant/wpa_supplicant-{}-"
                                          "{}.conf".format(profile, device_user))
 
-    if (len(profiles) == 0
-        or profile == "Добавить профиль" 
-        or assert_error is True):
+    if (len(profiles) == 0 or
+            profile == "Добавить профиль" or
+            assert_error is True):
 
         # Или в случае, если выбран 'добавить профиль':
         # Или профилей вообще нет
