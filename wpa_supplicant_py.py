@@ -115,7 +115,7 @@ try:
 
     profiles = profiles_mkdir()
     c = Counter(profiles)
-    profiles = list(set([line if c[line] == 1 else line + f" ({c[line]}x*)"
+    profiles = list(set([line if c[line] == 1 else line + f" ({c[line]}x)"
                         for line in profiles]))
     profiles.append("Добавить профиль")
     profile = None
@@ -151,7 +151,7 @@ try:
                                 "какой желаете запустить?",
                                 profiles,
                                 color="yellow")
-            if profile.endswith('x*)'):
+            if profile.endswith('x)'):
                 profile = profile[:-6] 
 
             if profile != "Добавить профиль": 
@@ -170,7 +170,6 @@ try:
         # Или профилей вообще нет
 
         ssid, password = password_and_ssid()
-
         # Создание профиля
     status_write = write_profile(ssid, password)
     if status_write is True:

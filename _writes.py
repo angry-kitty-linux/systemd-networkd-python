@@ -281,22 +281,28 @@ def profiles_mkdir() -> List[str]:
 
 @Check_error()
 @KeyboardError()
-def correct_Profile(profile: str) -> str:
+def correct_Profile(profile: str) -> Union[str, None]:
     """ Для определения нужного профиля с одним SSID и с разными модулями """
     
     files = os.listdir(path_Wpa)
     count_True = sum([True for file in files if profile in file])
     profiles = [file[15:-5] for file in files if profile in file]
     # Для определения кол-ва найденных профидей (во избежание путаницы)
-    if count_True != 1:
-       user_Choice = input_list("Обнаружен профиль с разными модулями WI-FI"
-                                ", выберите нужный",
-                                profiles,
-                                color="yellow")   
+    if count_True != 1 and count_True != 0:
+        user_Choice = input_list("Обнаружен профиль с разными модулями WI-FI"
+                                 ", выберите нужный",
+                                 profiles,
+                                 color="yellow")
+
+        path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
+
     if count_True == 1:
         user_Choice = profiles[0]
+        path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
+    
+    if count_True == 0:
+        path = None
 
-    path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
     return path
 
 
@@ -312,7 +318,6 @@ def view_password(path: str) -> Union[str, None]:
     return password
 
 
-@Check_error()
 @KeyboardError()
 def password_and_ssid() -> Tuple[str]:
     """ Функция для ввода SSID & Пароля """
@@ -321,14 +326,17 @@ def password_and_ssid() -> Tuple[str]:
     print_arr("Введите SSID (название точки доступа)", color="green")
     ssid = input("> ")
     # Ввод пароля
+
+    path = correct_Profile(ssid)
     if ssid in profiles_mkdir():
         user_Choice = input_y_n("Профиль существует, перезаписать? (y, n) ",
-                                color="yellow") 
-        path = correct_Profile(ssid)
+                                color="yellow")
         if user_Choice == 0:
-            password = view_password(path) 
+            password = view_password(path)
             return ssid, password
 
+        if user_Choice == 1:
+            os.remove(path)
+
     password = password_user(ssid)
-    os.remove(path)
     return ssid, password
