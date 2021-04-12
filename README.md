@@ -28,14 +28,16 @@ Systemd-networkd-python
 ---------------------
 Программа предполагает что у вас установлен модуль `psutil`. Вы его можете установить
 с помощью pip командой:
+
 `$ sudo pip3 install psutil`
 
 Или же через пакетный менеджер вашего дистрибутива
 
-*Arch Linux*
+*Arch Linux*:
 `$ yay -S python-psutil`
 
-*Debian | Ubuntu | Linux Mint*
+*Debian | Ubuntu | Linux Mint*:
+
 `$ sudo apt install python-psutil`
 
 
