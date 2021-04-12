@@ -8,6 +8,7 @@
 """
 
 
+import socket
 import subprocess
 import time
 from typing import Union
@@ -33,19 +34,17 @@ def check_connect(timeout: int = 10, print_output: bool = True) -> int:
     # timeout - "Задержка (wpa_supplicant не сразу включается)"
     # print_output - "Печатать вывод"
 
-    try:
-        if print_output is True:
-            print_arr("Проверка соединения...", color="yellow")
+    if print_output is True:
+        print_arr("Проверка соединения...", color="yellow")
 
-        time.sleep(timeout)
+    time.sleep(timeout)
 
-        subprocess.check_call(["ping", "-c 1", "eth0.me"],
-                              stdout=devnull,
-                              stderr=devnull
-                              )
+    s = socket.gethostbyname(socket.getfqdn())
+
+    if s.startswith("192."):
         return 1
-    except subprocess.CalledProcessError:
-        return 0
+
+    return 0
 
 
 @Check_error()
