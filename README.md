@@ -34,10 +34,11 @@ Systemd-networkd-python
 Или же через пакетный менеджер вашего дистрибутива
 
 *Arch Linux*:
+---
 `$ yay -S python-psutil`
 
 *Debian | Ubuntu | Linux Mint*:
-
+---
 `$ sudo apt install python-psutil`
 
 
