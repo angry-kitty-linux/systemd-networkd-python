@@ -185,7 +185,6 @@ def kill(id_proccess: int) -> int:
 
         return 1
     except Exception as e:
-        print_arr(e, color="red")
         return 0
 
 

@@ -103,7 +103,6 @@ def kill_internet(ppid: int, print_output: bool = True) -> int:
     if print_output is False:
         subprocess.check_call(["systemctl", "stop",
                               "wpa_supplicant_python.service"])
-
         _writes.kill(ppid)
         return 1
 
