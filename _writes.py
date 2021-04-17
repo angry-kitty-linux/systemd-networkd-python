@@ -109,17 +109,32 @@ DHCP=ipv4
 
 
 
-def write_profile(ssid: str, password: str, replace=False) -> Union[bool, str]:
+def write_profile(ssid: str,
+                  password: Union[str, None],
+                  replace=False) -> Union[bool, str]:
+
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
-        with open(path, "w") as file:
-            ssid, password = (str(ssid), str(password))
-            output = os.popen(f"wpa_passphrase {ssid} {password}").read()
-            file.write(f"""
-ctrl_interface=/run/wpa_supplicant
+        if password is not None:
+            with open(path, "w") as file:
+                ssid, password = (str(ssid), str(password))
+                output = os.popen(f"wpa_passphrase {ssid} {password}").read()
+                file.write(f"""
+ctrl_interface=/run/wpa_supplicant GROUP=wheel
 update_config=1
 {output}
 """)
+
+        if password is None:
+            with open(path, "w") as file:
+                ssid = str(ssid)
+                file.write('ctrl_interface=/run/wpa_supplicant GROUP=wheel\n'
+                           'update_config=1\n'
+                           'network={\n'
+                           f'ssid="{ssid}"\n'
+                           'key_mgmt=NONE\n'
+                           '}')
+
         subprocess.check_call(
                             ["chmod", "733", path],
                             stdout=devnull,
@@ -313,8 +328,8 @@ def view_password(path: str) -> Union[str, None]:
     with open(path, "r") as file:
         for line in file:
             if "#psk" in line:
-                password = line[7:-2]
-    return password
+                return line[7:-2]
+            return None
 
 
 @KeyboardError()

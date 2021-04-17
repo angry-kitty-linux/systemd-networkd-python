@@ -41,7 +41,7 @@ from _config import devnull
 try:
     russian_locale()
     check_root()
-    device_user = device() 
+    device_user = device()
     # -----------------------
 
     module_profile()
@@ -125,7 +125,7 @@ try:
                             " (Может не работать)",
                             color="green"
                             )
-    
+
     assert_error = False
     if user_choice == 1:
         ssids = watch_ssid()
@@ -152,7 +152,7 @@ try:
                                 profiles,
                                 color="yellow")
             if profile.endswith('x)'):
-                profile = profile[:-6] 
+                profile = profile[:-6]
 
             if profile != "Добавить профиль": 
                 name_wifi = "wpa_supplicant-{}-{}.conf".format(profile,
@@ -187,14 +187,14 @@ try:
             device = write_profile.__annotations__["device"]
             path = write_profile.__annotations__["path"]
         if user_choice_input == 0:
-           path = status_write
+            path = status_write
         #
         #################################################################
     check_status = check_connect(timeout=0, print_output=False)
     if check_status == 1:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
-    
+
     subprocess.check_output(["systemctl", "stop",
                             "wpa_supplicant_python.service"])
     status_connect = connect(device_user, path)

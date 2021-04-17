@@ -10,6 +10,7 @@
 from _colors import print_arr
 from _wrappers import KeyboardError
 from typing import List
+from typing import Union
 import _connection
 
 
@@ -68,18 +69,22 @@ def input_list(text_quest: str,
 
 
 @KeyboardError()
-def password_user(ssid: str) -> str:
+def password_user(ssid: str) -> Union[str, None]:
     """ Функция для ввода пароля """
 
-    print_arr(f"Введите пароль от {ssid}", color="green")
+    print_arr(
+            f"Введите пароль от {ssid}\n[ENTER] - если пароль ненужен",
+            color="green")
 
     while True:
         user_choice = input("> ")
-
-        if len(user_choice) < 8 or len(user_choice) > 64:
-            print_arr("Пароль должен состоять от 8 символов и до 64, "
-                      "повторите попытку!", color="red")
+        if user_choice != "":
+            if len(user_choice) < 8 or len(user_choice) > 64:
+                print_arr("Пароль должен состоять от 8 символов и до 64, "
+                          "повторите попытку!", color="red")
 
         else:
-            return user_choice
+            if user_choice == "":
+                return None
 
+            return user_choice
