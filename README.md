@@ -33,7 +33,7 @@ Systemd-networkd-python
 | Ubuntu                     |       ✅       |
 | Linux Mint                 |       ✅       |
 | Debian                     |       ✅       |
-| Gentoo (без systemd)       |       ✅       |
+| Gentoo (c systemd)         |       ✅       |
 
 
 Зависимости
