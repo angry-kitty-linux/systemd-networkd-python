@@ -12,7 +12,7 @@ import __init__
 from _colors import print_arr
 
 from _writes import write_dhcp, write_wireless, write_profile
-from _writes import device 
+from _writes import take_device 
 from _writes import check_root
 from _writes import ppid
 from _writes import russian_locale
@@ -41,7 +41,7 @@ from _config import devnull
 try:
     russian_locale()
     check_root()
-    device_user = device()
+    device_user = take_device()
     # -----------------------
 
     module_profile()

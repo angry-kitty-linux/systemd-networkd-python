@@ -78,10 +78,9 @@ def password_user(ssid: str) -> Union[str, None]:
 
     while True:
         user_choice = input("> ")
-        if user_choice != "":
-            if len(user_choice) < 8 or len(user_choice) > 64:
-                print_arr("Пароль должен состоять от 8 символов и до 64, "
-                          "повторите попытку!", color="red")
+        if len(user_choice) < 8 or len(user_choice) > 64:
+            print_arr("Пароль должен состоять от 8 символов и до 64, "
+                      "повторите попытку!", color="red")
 
         else:
             if user_choice == "":

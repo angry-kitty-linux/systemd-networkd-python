@@ -29,6 +29,8 @@ from _config import devnull
 from _wrappers import Check_error
 from _wrappers import KeyboardError
 
+import __init__
+
 
 @Check_error()
 def check_root():
@@ -44,21 +46,44 @@ def check_root():
 
 
 @Check_error()
-def device():
+def take_device(print_output: bool = True) -> Tuple[str]:
     """ Определение вафли """
-
     global device
 
     devices = [line for line in psutil.net_if_stats()]
-    device_list = [line for line in devices if line != 'lo']
+    device_list = [line for line in devices
+                   if line != 'lo' and "enp" not in line]
 
     if len(device_list) == 1:
         device = device_list[0]
+        return device
+
+    if len(device_list) == 0:
+        print_arr("Ошибка: Не обнаружено ни одного молуля!", color="red")
+        SystemExit(1)
+
     else:
-        device = input_list("Обнаружено несколько модулей WI-FI, "
-                            "выберите нужный!",
-                            device_list,   # Список с модулями
-                            color="yellow")
+        if print_output is True:
+            device = input_list("Обнаружено несколько модулей WI-FI, "
+                                "выберите нужный!",
+                                device_list,   # Список с модулями
+                                color="yellow")
+
+    device_arg = __init__.args.device
+    if device_arg is not False:  # Если был введен аргумент --device
+        devices = device(print_output=False)
+
+        if device_arg not in devices:  # В случае, если пользователь ошибся
+            print_arr(f"Модуль {device_arg} не найден!", color="yellow")
+            device_user = device()
+
+        elif device_arg is False:  # Если аргумента непоследовало
+            device_user = device()
+
+        else:   # Если все норм
+            device_user = device_arg
+
+    device = device_user
     return device
 
 
@@ -112,7 +137,6 @@ DHCP=ipv4
 def write_profile(ssid: str,
                   password: Union[str, None],
                   replace=False) -> Union[bool, str]:
-
     path = f"/etc/wpa_supplicant/wpa_supplicant-{ssid}-{device}.conf"
     if not os.path.exists(path) or replace is True:
         if password is not None:
