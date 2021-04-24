@@ -23,6 +23,7 @@ Systemd-networkd-python
 Примеры
 ---
 .. code-block:: python
+
     $ sudo python3 wpa_supplicant_python.py --device <device>
 
 Возможные проблемы
