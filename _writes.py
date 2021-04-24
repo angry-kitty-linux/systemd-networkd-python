@@ -58,33 +58,32 @@ def take_device(print_output: bool = True) -> Tuple[str]:
         device = device_list[0]
         return device
 
-    if len(device_list) == 0:
+    elif len(device_list) == 0:
         print_arr("Ошибка: Не обнаружено ни одного молуля!", color="red")
         SystemExit(1)
 
     else:
-        if print_output is True:
-            device = input_list("Обнаружено несколько модулей WI-FI, "
-                                "выберите нужный!",
-                                device_list,   # Список с модулями
-                                color="yellow")
-
-    device_arg = __init__.args.device
-    if device_arg is not False:  # Если был введен аргумент --device
-        devices = device(print_output=False)
-
-        if device_arg not in devices:  # В случае, если пользователь ошибся
-            print_arr(f"Модуль {device_arg} не найден!", color="yellow")
-            device_user = device()
+        device_arg = __init__.args.device
+        if device_arg is not False:  # Если был введен аргумент --device
+            if device_arg not in device_list:  # если пользователь ошибся
+                print_arr(f"Модуль {device_arg} не найден!", color="yellow")
+                device = input_list("Обнаружено несколько модулей"
+                                    " WI-FI, выберите нужный!",
+                                    device_list,   # Список с модулями
+                                    color="yellow")
+            else:   # Если все норм
+                device = device_arg
 
         elif device_arg is False:  # Если аргумента непоследовало
-            device_user = device()
+            if print_output is True:
+                device = input_list("Обнаружено несколько модулей"
+                                    " WI-FI, выберите нужный!",
+                                    device_list,   # Список с модулями
+                                    color="yellow")
 
-        else:   # Если все норм
-            device_user = device_arg
 
-    device = device_user
-    return device
+
+        return device
 
 
 @Check_error()
