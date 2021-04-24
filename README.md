@@ -7,13 +7,12 @@ Systemd-networkd-python
 
 БЫСТРЫЙ СТАРТ
 =======================
-`$ cd`
 
-`$ git clone https://github.com/angry-kitty-linux/systemd-networkd-python`
-
-`$ cd systemd-networkd-python`
-
-`$ sudo python3 wpa_supplicant_python.py`
+.. code-block:: bash
+        $ cd
+        $ git clone https://github.com/angry-kitty-linux/systemd-networkd-python
+        $ cd systemd-networkd-python
+        $ sudo python3 wpa_supplicant_python.py
 
 
 Доступные флаги
