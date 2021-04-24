@@ -5,17 +5,22 @@ Systemd-networkd-python
 
 *Systemd-network-python* - это обвертка, которая должна вам помочь при конфигурации wpa_supplicant, с использованием systemd-networkd.
 
- БЫСТРЫЙ СТАРТ
- ------------------
-
+БЫСТРЫЙ СТАРТ
+------------------
 `$ cd`
 
 `$ git clone https://github.com/angry-kitty-linux/systemd-networkd-python`
 
 `$ cd systemd-networkd-python`
 
-`$ sudo python3 systemd-networkd-python`
+`$ sudo python3 wpa_supplicant_python.py`
 
+
+Доступные флаги
+------------------
+При желание вы можете указать название интерфейса
+.. code-block:: bash
+    sudo python3 wpa_supplicant_python.py --device <device>
 
 Возможные проблемы
 ---------------------
