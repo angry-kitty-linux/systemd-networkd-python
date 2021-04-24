@@ -19,7 +19,7 @@ Systemd-networkd-python
 Доступные флаги
 ------------------
 При желание вы можете указать название интерфейса
-.. code-block:: bash
+.. code-block:: python 
     sudo python3 wpa_supplicant_python.py --device <device>
 
 Возможные проблемы
