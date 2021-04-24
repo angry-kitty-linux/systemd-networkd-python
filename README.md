@@ -9,10 +9,10 @@ Systemd-networkd-python
 =======================
 
 ``` bash
-        $ cd
-        $ git clone https://github.com/angry-kitty-linux/systemd-networkd-python
-        $ cd systemd-networkd-python
-        $ sudo python3 wpa_supplicant_python.py
+$ cd
+$ git clone https://github.com/angry-kitty-linux/systemd-networkd-python
+$ cd systemd-networkd-python
+$ sudo python3 wpa_supplicant_python.py
 ```
 
 Доступные флаги
