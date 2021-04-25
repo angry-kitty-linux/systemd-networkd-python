@@ -81,18 +81,12 @@ def take_device(print_output: bool = True) -> Tuple[str]:
                                     device_list,   # Список с модулями
                                     color="yellow")
 
-
-
         return device
 
 
 @Check_error()
-def write_dhcp(print_output=True):
+def write_dhcp():
     """ Запись dhcp профиля """
-
-    if print_output is True:
-        print_arr("Удаляю конфигурацию...", color="green")
-
     with open(path_dhcp, 'w') as file:
         file.write("""
 [Match]
@@ -116,13 +110,9 @@ def distribution() -> str:
 
 
 @Check_error()
-def write_wireless(print_output: bool = True, replace: bool = False):
+def write_wireless():
     """ Создания профиля """
 
-    if replace is True:
-        if print_output is True:
-            print_arr("Удаляю конфиг...", color="green")
-        os.remove(path_wireless)
     with open(path_wireless, "w") as file:
         file.write(f"""
 [Match]

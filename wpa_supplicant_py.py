@@ -45,30 +45,13 @@ try:
     # -----------------------
 
     module_profile()
-    bool_path = os.path.exists(path_dhcp)
-
-    if bool_path is True:
-        user_choice = input_y_n("Обнаружена существующая конфигурация, "
-                                "перезаписать? (y, n)", color="yellow")
-
-        if user_choice == 1:
-            print_arr("Записываю конфиг...", color="green")
-            write_dhcp()
-
-        if user_choice == 0:
-            print_arr("OK, оставляю на месте!", color="green")
-
-    if bool_path is False:
-        print_arr(
-                "Конфигурация не найдена, создаю новый конфиг...",
-                color="yellow")
-        write_dhcp()
+    write_dhcp()
 
     #########################
     # Добавление в автозагрузку
     print_arr(
             "Запускаю/добавляю в автозагрузку systemd-networkd...",
-            color="green")
+            color="pink")
 
     subprocess.check_call(["systemctl", "enable", "--now",
                           "systemd-networkd.service"],
@@ -87,21 +70,8 @@ try:
                           stdout=devnull,
                           stderr=devnull)
     #########################
-
-    # Проверка на существование ..../25-wireless.network
-    bool_path = os.path.exists(path_wireless)
-
-    if bool_path is True:
-        print_arr("Обнаружен 25-wireless.network()", color="yellow")
-        user_choice = input_y_n("Желаете перезаписать? (y, n)", color="yellow")
-
-        if user_choice == 1:
-            print_arr("OK.", color="green")
-            write_wireless(replace=True)
-
-    if bool_path is False:
-        print_arr("Конфигурация была не найдена! Создаю...", color="yellow")
-        write_wireless()
+    
+    write_wireless()
 
     #######################
     # Перезапуск службы
@@ -123,7 +93,7 @@ try:
     user_choice = input_y_n(
                             "Желаете отобразить все доступные WI-FI сети?"
                             " (Может не работать)",
-                            color="green"
+                            color="yellow"
                             )
 
     assert_error = False

@@ -24,5 +24,4 @@ group.add_argument('--device',
                    metavar="<device>",
                    default=False,
                    help="Ввод используемого модуля")
-
 args = parser.parse_args()
