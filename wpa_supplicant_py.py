@@ -70,7 +70,6 @@ try:
                           stdout=devnull,
                           stderr=devnull)
     #########################
-    
     write_wireless()
 
     #######################

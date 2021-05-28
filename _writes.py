@@ -42,7 +42,7 @@ def check_root():
         print_arr("Привет, ", user, color="green")
         print_arr("Для работоспособности программы"
                   "Вам требуется root", color="red")
-        SystemExit(0)
+        raise SystemExit(1)
 
 
 @Check_error()
@@ -60,7 +60,7 @@ def take_device(print_output: bool = True) -> Tuple[str]:
 
     elif len(device_list) == 0:
         print_arr("Ошибка: Не обнаружено ни одного молуля!", color="red")
-        SystemExit(1)
+        raise SystemExit(1)
 
     else:
         device_arg = __init__.args.device
@@ -209,7 +209,7 @@ def kill(id_proccess: int) -> int:
             if status_kill == 0:
                 print_arr("Не получилось отключится, прерывание!",
                           color="red")
-                SystemExit(1)
+                raise SystemExit(1)
 
         return 1
     except Exception as e:
