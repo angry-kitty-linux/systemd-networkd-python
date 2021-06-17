@@ -40,7 +40,7 @@ def check_root():
 
     if user != "root":
         print_arr("Привет, ", user, color="green")
-        print_arr("Для работоспособности программы"
+        print_arr("Для работоспособности программы "
                   "Вам требуется root", color="red")
         raise SystemExit(1)
 
@@ -310,7 +310,7 @@ def profiles_mkdir() -> List[str]:
 @KeyboardError()
 def correct_Profile(profile: str) -> Union[str, None]:
     """ Для определения нужного профиля с одним SSID и с разными модулями """
-    
+
     files = os.listdir(path_Wpa)
     count_True = sum([True for file in files if profile in file])
     profiles = [file[15:-5] for file in files if profile in file]
@@ -326,7 +326,7 @@ def correct_Profile(profile: str) -> Union[str, None]:
     if count_True == 1:
         user_Choice = profiles[0]
         path = f"{path_Wpa}/wpa_supplicant-{user_Choice}.conf"
-    
+
     if count_True == 0:
         path = None
 

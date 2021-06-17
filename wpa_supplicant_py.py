@@ -12,7 +12,7 @@ import __init__
 from _colors import print_arr
 
 from _writes import write_dhcp, write_wireless, write_profile
-from _writes import take_device 
+from _writes import take_device
 from _writes import check_root
 from _writes import ppid
 from _writes import russian_locale
@@ -25,7 +25,6 @@ from _writes import correct_Profile
 from _connection import connect
 from _connection import check_connect
 from _connection import kill_internet
-from _connection import watch_ssid
 
 from _daemon import write_daemon
 
@@ -33,8 +32,6 @@ from _input_while import input_y_n
 from _input_while import input_list
 from _input_while import password_user
 
-from _config import path_dhcp
-from _config import path_wireless
 from _config import devnull
 
 
@@ -89,51 +86,25 @@ try:
     profiles.append("Добавить профиль")
     profile = None
 
-    user_choice = input_y_n(
-                            "Желаете отобразить все доступные WI-FI сети?"
-                            " (Может не работать)",
-                            color="yellow"
-                            )
+    if len(profiles) >= 1:  # Если, найдено больше одного профиля:
+        profile = input_list(
+                            "Найдено больше одного профиля, "
+                            "какой желаете запустить?",
+                            profiles,
+                            color="yellow")
+        if profile.endswith('x)'):
+            profile = profile[:-6]
 
-    assert_error = False
-    if user_choice == 1:
-        ssids = watch_ssid()
-
-        try:
-            ssid = input_list(
-                            "Выберите нужный SSID:",
-                            ssids,
-                            color="yellow",
-                            print_output=False)
-
-            password = password_user(ssid)
-        except AssertionError:  # В случае, если SSID не удалось просканировать
-            assert_error = True
-
-        else:
-            assert_error = False
-
-    if user_choice == 0:  # Если не отображать доступные сети:
-        if len(profiles) >= 1:  # Если, найдено больше одного профиля:
-            profile = input_list(
-                                "Найдено больше одного профиля, "
-                                "какой желаете запустить?",
-                                profiles,
-                                color="yellow")
-            if profile.endswith('x)'):
-                profile = profile[:-6]
-
-            if profile != "Добавить профиль": 
-                name_wifi = "wpa_supplicant-{}-{}.conf".format(profile,
-                                                               device_user)
-                path = f"/etc/wpa_supplicant/{name_wifi}"
-                ssid = profile
-                path = correct_Profile(profile)
-                password = view_password(path)
+        if profile != "Добавить профиль":
+            name_wifi = "wpa_supplicant-{}-{}.conf".format(profile,
+                                                           device_user)
+            path = f"/etc/wpa_supplicant/{name_wifi}"
+            ssid = profile
+            path = correct_Profile(profile)
+            password = view_password(path)
 
     if (len(profiles) == 0 or
-            profile == "Добавить профиль" or
-            assert_error is True):
+            profile == "Добавить профиль"):
 
         # Или в случае, если выбран 'добавить профиль':
         # Или профилей вообще нет
@@ -164,7 +135,7 @@ try:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
 
-    os.popen("systemct stop wpa_supplicant_python.service")
+    os.popen("systemctl stop wpa_supplicant_python.service")
 
     status_connect = connect(device_user, path)
 
