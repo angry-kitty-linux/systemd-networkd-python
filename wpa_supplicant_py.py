@@ -164,8 +164,8 @@ try:
         ppid_user = ppid()
         kill_internet(ppid_user, print_output=False)
 
-    subprocess.check_output(["systemctl", "stop",
-                            "wpa_supplicant_python.service"])
+    os.popen("systemct stop wpa_supplicant_python.service")
+
     status_connect = connect(device_user, path)
 
     if status_connect == 0:
