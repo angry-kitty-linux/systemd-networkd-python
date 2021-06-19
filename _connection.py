@@ -57,9 +57,12 @@ def connect(device: str, path: str, print_output: bool = True) -> int:
 
     _writes.extra_kill()
     # Финальный шаг
-    command = "wpa_supplicant -B -i {} -c {}".format(device, path)
-    output = os.popen(command).read()
-    connect.__annotations__['output'] = output
+    try:
+        subprocess.check_call(
+            ["wpa_supplicant", "-B", "-i", device, "-c", path],
+            stdout=devnull, stderr=devnull)
+    except subprocess.CalledProcessError:
+        pass
 
     if check_connect() == 1:
         if print_output is True:
@@ -68,7 +71,6 @@ def connect(device: str, path: str, print_output: bool = True) -> int:
 
     else:
         if print_output is True:
-            print_arr(output, color="red")
             print_arr("Не получилось подключится ): ", color="red")
         return 0
 
@@ -208,7 +210,7 @@ def watch_ssid() -> Union[int, List[str]]:
 
                         if security == "[ESS]":
                             text = "None".center(8)
-                        elif ("[WPA-PSK-CCMP+TKIP]" in security 
+                        elif ("[WPA-PSK-CCMP+TKIP]" in security
                               or "[WPA2-PSK-CCMP+TKIP]" in security):
                             text = "WPA/WPA2"
 
@@ -217,7 +219,7 @@ def watch_ssid() -> Union[int, List[str]]:
                             text = "WPA/WPA2"
 
                         text = print_arr(text,
-                                         color="red", 
+                                         color="red",
                                          return_color=True).ljust(12)
                         print(f" {text} ".ljust(20, "|"), end="")
                         #######################################################

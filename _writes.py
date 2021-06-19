@@ -185,8 +185,7 @@ def extra_kill() -> int:
 
     try:
         subprocess.check_call(["wpa_cli", "disconnect"],
-                              stdout=devnull,
-                              stderr=devnull)
+                              stdout=devnull, stderr=devnull)
 
         os.remove("/run/wpa_supplicant/{}".format(device))
 
@@ -350,7 +349,8 @@ def password_and_ssid() -> Tuple[str]:
     """ Функция для ввода SSID & Пароля """
 
     # Ввод ssid
-    print_arr("Введите SSID (название точки доступа)", color="green")
+    print_arr("Введите SSID (название точки доступа)",
+              color="green")
     ssid = input("> ")
     # Ввод пароля
 

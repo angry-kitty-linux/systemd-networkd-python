@@ -136,7 +136,6 @@ try:
         kill_internet(ppid_user, print_output=False)
 
     os.popen("systemctl stop wpa_supplicant_python.service")
-
     status_connect = connect(device_user, path)
 
     if status_connect == 0:
