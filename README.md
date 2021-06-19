@@ -1,6 +1,8 @@
 Systemd-networkd-python
 =======================
 
+![Alt Text](https://github.com/angry-kitty-linux/systemd-networkd-python/blob/first/gif/video.gif)
+
 Что это такое?
 =======================
 *Systemd-network-python* - это обвертка, которая должна вам помочь при конфигурации wpa_supplicant, с использованием systemd-networkd.
